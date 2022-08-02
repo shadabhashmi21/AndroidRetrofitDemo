@@ -24,6 +24,9 @@ class MainActivity : AppCompatActivity() {
 
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
-        binding.demoText.text = viewModel.textWorking
+        viewModel.movieLiveData.observe(this){
+            binding.demoText.text = it.results[0].title
+        }
+        viewModel.fetchMovieList()
     }
 }
