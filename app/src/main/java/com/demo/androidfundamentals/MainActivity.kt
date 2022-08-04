@@ -27,6 +27,12 @@ class MainActivity : AppCompatActivity() {
         viewModel.movieLiveData.observe(this){
             binding.demoText.text = it.results[0].title
         }
+        viewModel.apiStatus.observe(this){
+           when(it) {
+               is MainViewModel.ApiStatus.Success -> binding.demoText.text = it.movies.results.first().title
+               else -> {}
+           }
+        }
         viewModel.fetchMovieList()
     }
 }

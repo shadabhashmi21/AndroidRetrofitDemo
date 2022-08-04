@@ -16,12 +16,22 @@ class MainViewModel: ViewModel() {
 
     val movieLiveData = MutableLiveData<APIModel>()
 
+    val apiStatus = MutableLiveData<ApiStatus>()
+
     fun fetchMovieList(){
+        apiStatus.value = ApiStatus.Loader
         viewModelScope.launch {
             val movies = withContext(Dispatchers.IO){
                 dataRepository.getMovies()
             }
             movieLiveData.value = movies
+            apiStatus.value = ApiStatus.Success(movies)
         }
+    }
+
+    sealed class ApiStatus {
+        object Loader : ApiStatus()
+        data class Error(val message: String): ApiStatus()
+        data class Success(val movies: APIModel): ApiStatus()
     }
 }
