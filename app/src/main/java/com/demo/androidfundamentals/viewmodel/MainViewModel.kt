@@ -14,24 +14,37 @@ class MainViewModel: ViewModel() {
 
     private val dataRepository = DataRepository(RetrofitInstance.service)
 
-    val movieLiveData = MutableLiveData<APIModel>()
-
     val apiStatus = MutableLiveData<ApiStatus>()
 
     fun fetchMovieList(){
         apiStatus.value = ApiStatus.Loader
         viewModelScope.launch {
-            val movies = withContext(Dispatchers.IO){
+            val response = withContext(Dispatchers.IO){
                 dataRepository.getMovies()
             }
-            movieLiveData.value = movies
-            apiStatus.value = ApiStatus.Success(movies)
+            if(response.isSuccessful) {
+                apiStatus.value = ApiStatus.Success(response.body()!!)
+            } else {
+                apiStatus.value = ApiStatus.Error(response.errorBody().toString())
+            }
+
         }
+        /*apiService.getMovieDetails(apiPageNo).enqueue(object : Callback<ApiModel> {
+            override fun onResponse(call: Call<ApiModel>, response: Response<ApiModel>) {
+                populateData(response.body()!!.results)
+                loadMore = true;
+            }
+
+            override fun onFailure(call: Call<ApiModel>, t: Throwable) {
+                d("Example", "onFailure -> ${t.localizedMessage}")
+                loadMore = true;
+            }
+        })*/
     }
 
     sealed class ApiStatus {
         object Loader : ApiStatus()
         data class Error(val message: String): ApiStatus()
-        data class Success(val movies: APIModel): ApiStatus()
+        data class Success(val apiModel: APIModel): ApiStatus()
     }
 }
