@@ -9,6 +9,7 @@ import com.demo.androidfundamentals.source.DataRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.properties.Delegates
 
 class MainViewModel: ViewModel() {
 
@@ -16,11 +17,18 @@ class MainViewModel: ViewModel() {
 
     val apiStatus = MutableLiveData<ApiStatus>()
 
-    fun fetchMovieList(){
+    var pageNumber by Delegates.notNull<Int>()
+
+    fun fetchMovieList(fetchNextPage: Boolean = false){
+        if(fetchNextPage.not()) {
+            pageNumber = 1
+        } else {
+            pageNumber++
+        }
         apiStatus.value = ApiStatus.Loader
         viewModelScope.launch {
             val response = withContext(Dispatchers.IO){
-                dataRepository.getMovies()
+                dataRepository.getMovies(pageNumber)
             }
             if(response.isSuccessful) {
                 apiStatus.value = ApiStatus.Success(response.body()!!)
