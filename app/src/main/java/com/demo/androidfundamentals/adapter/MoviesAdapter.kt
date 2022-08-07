@@ -12,10 +12,10 @@ import com.squareup.picasso.Picasso
 
 class MoviesAdapter: RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
 
-    private var movieList: List<MovieModel> = mutableListOf()
+    private val movieList: MutableList<MovieModel> = mutableListOf()
 
-    fun populateData(movieList: List<MovieModel>) {
-        this.movieList = movieList
+    fun populateData(results: List<MovieModel>) {
+        movieList.addAll(results)
     }
 
     inner class ViewHolder(binding: CardLayoutBinding): RecyclerView.ViewHolder(binding.root){
@@ -24,7 +24,6 @@ class MoviesAdapter: RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        //val view = LayoutInflater.from(parent.context).inflate(R.layout.card_layout, parent, false)
         val binding = CardLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
