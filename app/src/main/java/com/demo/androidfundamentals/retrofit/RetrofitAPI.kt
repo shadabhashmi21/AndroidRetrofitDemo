@@ -7,6 +7,6 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface RetrofitAPI : MoviesAPI {
-    @GET("/3/movie/top_rated?api_key=7a21e3b33f92fe9700af60427bb7ca24")
+    @GET("/3/movie/top_rated?api_key=e3fa29ff3ccecf2807d0ae68d4c4265e")
     override suspend fun getMovies(@Query("page") page: Int): Response<APIModel>
 }
