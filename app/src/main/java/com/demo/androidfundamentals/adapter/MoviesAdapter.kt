@@ -19,8 +19,8 @@ class MoviesAdapter: RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
     }
 
     inner class ViewHolder(binding: CardLayoutBinding): RecyclerView.ViewHolder(binding.root){
-        val moviePoster: ImageView = binding.moviePoster//itemView.findViewById(R.id.movie_poster)
-        val movieTitle: TextView = binding.movieTitle//itemView.findViewById(R.id.movie_title)
+        val moviePoster: ImageView = binding.moviePoster
+        val movieTitle: TextView = binding.movieTitle
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
