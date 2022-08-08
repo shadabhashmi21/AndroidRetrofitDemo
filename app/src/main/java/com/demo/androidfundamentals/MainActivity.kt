@@ -1,15 +1,13 @@
 package com.demo.androidfundamentals
 
 import android.os.Bundle
-import android.widget.Toast
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.demo.androidfundamentals.adapter.MoviesAdapter
 import com.demo.androidfundamentals.databinding.ActivityMainBinding
-import com.demo.androidfundamentals.models.MovieModel
 import com.demo.androidfundamentals.viewmodel.MainViewModel
 
 
@@ -30,21 +28,25 @@ class MainActivity : AppCompatActivity() {
         binding.recyclerView.adapter = moviesAdapter
         binding.recyclerView.layoutManager = gridLayoutManager
 
-        viewModel.apiStatus.observe(this){
-           when(it) {
-               is MainViewModel.ApiStatus.Success -> {
-                   moviesAdapter.populateData(it.apiModel.results.toMutableList())
-                   moviesAdapter.notifyDataSetChanged()
-               }
-               else -> {}
-           }
+        viewModel.apiStatus.observe(this) {
+            when (it) {
+                is MainViewModel.ApiStatus.Success -> {
+                    moviesAdapter.populateData(it.apiModel.results.toMutableList())
+                    moviesAdapter.notifyItemChanged(it.apiModel.results.size)
+                    binding.progressBar.visibility = View.GONE
+                }
+                is MainViewModel.ApiStatus.Loader -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                }
+                else -> {}
+            }
         }
         viewModel.fetchMovieList()
 
         binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (!recyclerView.canScrollVertically(1)){
+                if (!recyclerView.canScrollVertically(1)) {
                     viewModel.fetchMovieList(true)
                 }
             }
