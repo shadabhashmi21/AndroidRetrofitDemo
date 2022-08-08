@@ -10,12 +10,45 @@ import com.demo.androidfundamentals.databinding.CardLayoutBinding
 import com.demo.androidfundamentals.models.MovieModel
 import com.squareup.picasso.Picasso
 
+enum class SortType {
+    Asc, Desc
+}
+
 class MoviesAdapter: RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
 
     private val movieList: MutableList<MovieModel> = mutableListOf()
 
+    private var selectedSortType = SortType.Asc
+
     fun populateData(results: List<MovieModel>) {
         movieList.addAll(results)
+        loadSortedData()
+    }
+
+    fun sort() {
+        if(movieList.isEmpty()) {
+            return
+        }
+        toggleSortType()
+        loadSortedData()
+    }
+
+    private fun toggleSortType() {
+        selectedSortType = if(selectedSortType == SortType.Asc) {
+            SortType.Desc
+        } else {
+            SortType.Asc
+        }
+    }
+
+    private fun loadSortedData() {
+        if(selectedSortType == SortType.Asc) {
+            movieList.sortBy { it.title }
+        } else {
+            movieList.sortByDescending { it.title }
+        }
+        //notifyItemChanged(movieList.size)
+        notifyDataSetChanged()
     }
 
     inner class ViewHolder(binding: CardLayoutBinding): RecyclerView.ViewHolder(binding.root){

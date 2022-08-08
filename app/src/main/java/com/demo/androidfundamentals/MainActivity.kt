@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.demo.androidfundamentals.adapter.MoviesAdapter
+import com.demo.androidfundamentals.adapter.SortType
 import com.demo.androidfundamentals.databinding.ActivityMainBinding
 import com.demo.androidfundamentals.viewmodel.MainViewModel
 
@@ -16,6 +17,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MainViewModel
     private val moviesAdapter = MoviesAdapter()
     lateinit var gridLayoutManager: GridLayoutManager
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +34,6 @@ class MainActivity : AppCompatActivity() {
             when (it) {
                 is MainViewModel.ApiStatus.Success -> {
                     moviesAdapter.populateData(it.apiModel.results.toMutableList())
-                    moviesAdapter.notifyItemChanged(it.apiModel.results.size)
                     binding.progressBar.visibility = View.GONE
                 }
                 is MainViewModel.ApiStatus.Loader -> {
@@ -51,5 +52,9 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
+
+        binding.sortBtn.setOnClickListener {
+            moviesAdapter.sort()
+        }
     }
 }
