@@ -1,5 +1,9 @@
 package com.demo.androidfundamentals.models
 
+import com.google.gson.annotations.SerializedName
+
 data class MovieModel(
-    val title: String, val poster_path: String, val release_date: String
+    @SerializedName("title") val title: String,
+    @SerializedName("poster_path") val posterUrl: String,
+    @SerializedName("release_date") val releaseDate: String
 )

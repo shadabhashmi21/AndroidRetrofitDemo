@@ -42,11 +42,9 @@ class MainActivity : AppCompatActivity() {
         viewModel.fetchMovieList()
 
         binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            var count = 1
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (!recyclerView.canScrollVertically(1)){
-                    Toast.makeText(this@MainActivity, "Page Scrolled till end ${count++}", Toast.LENGTH_SHORT).show()
                     viewModel.fetchMovieList(true)
                 }
             }

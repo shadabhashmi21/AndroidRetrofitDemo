@@ -37,17 +37,6 @@ class MainViewModel: ViewModel() {
             }
 
         }
-        /*apiService.getMovieDetails(apiPageNo).enqueue(object : Callback<ApiModel> {
-            override fun onResponse(call: Call<ApiModel>, response: Response<ApiModel>) {
-                populateData(response.body()!!.results)
-                loadMore = true;
-            }
-
-            override fun onFailure(call: Call<ApiModel>, t: Throwable) {
-                d("Example", "onFailure -> ${t.localizedMessage}")
-                loadMore = true;
-            }
-        })*/
     }
 
     sealed class ApiStatus {
