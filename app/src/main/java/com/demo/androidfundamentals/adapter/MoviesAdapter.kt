@@ -47,8 +47,7 @@ class MoviesAdapter: RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
         } else {
             movieList.sortByDescending { it.title }
         }
-        //notifyItemChanged(movieList.size)
-        notifyDataSetChanged()
+        notifyItemRangeChanged(0, movieList.size)
     }
 
     inner class ViewHolder(binding: CardLayoutBinding): RecyclerView.ViewHolder(binding.root){

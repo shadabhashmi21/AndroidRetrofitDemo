@@ -9,7 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.demo.androidfundamentals.adapter.MoviesAdapter
 import com.demo.androidfundamentals.adapter.SortType
 import com.demo.androidfundamentals.databinding.ActivityMainBinding
+import com.demo.androidfundamentals.databinding.SortBottomSheetBinding
 import com.demo.androidfundamentals.viewmodel.MainViewModel
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
 
 class MainActivity : AppCompatActivity() {
@@ -17,6 +19,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MainViewModel
     private val moviesAdapter = MoviesAdapter()
     lateinit var gridLayoutManager: GridLayoutManager
+    private lateinit var bottomSheetBinding: SortBottomSheetBinding
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,6 +35,7 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.apiStatus.observe(this) {
             when (it) {
+
                 is MainViewModel.ApiStatus.Success -> {
                     moviesAdapter.populateData(it.apiModel.results.toMutableList())
                     binding.progressBar.visibility = View.GONE
@@ -54,7 +58,11 @@ class MainActivity : AppCompatActivity() {
         })
 
         binding.sortBtn.setOnClickListener {
-            moviesAdapter.sort()
+            //moviesAdapter.sort()
+            val dialog = BottomSheetDialog(this)
+            bottomSheetBinding = SortBottomSheetBinding.inflate(layoutInflater)
+            dialog.setContentView(bottomSheetBinding.root)
+            dialog.show()
         }
     }
 }
