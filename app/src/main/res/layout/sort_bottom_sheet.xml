@@ -5,11 +5,30 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
+        android:id="@+id/text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Sort"
         app:layout_constraintTop_toTopOf="parent"
         android:gravity="center"
+        android:textSize="36sp"
         />
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/text_view">
+        <RadioButton android:id="@+id/by_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="By Name"
+            android:onClick="onRadioButtonClicked"/>
+        <RadioButton android:id="@+id/by_release_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="By Release Date"
+            android:onClick="onRadioButtonClicked"/>
+    </RadioGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
