@@ -1,5 +1,6 @@
 package com.demo.androidfundamentals.adapter
 
+import android.util.Log
 import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -14,23 +15,59 @@ enum class SortType {
     Asc, Desc
 }
 
+enum class SortBy{
+    Name, ReleaseDate
+}
+
 class MoviesAdapter: RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
 
     private val movieList: MutableList<MovieModel> = mutableListOf()
 
     private var selectedSortType = SortType.Asc
+    private var selectedSortBy = SortBy.Name
 
     fun populateData(results: List<MovieModel>) {
         movieList.addAll(results)
-        loadSortedData()
+        if (selectedSortBy == SortBy.Name){
+            sortByName()
+        }else{
+            sortByDate()
+        }
     }
 
-    fun sort() {
+    fun sortByName(){
+        selectedSortBy = SortBy.Name
         if(movieList.isEmpty()) {
             return
         }
-        toggleSortType()
-        loadSortedData()
+        if (selectedSortType == SortType.Asc){
+            movieList.sortBy {
+                it.title
+            }
+        }else{
+            movieList.sortByDescending {
+                it.title
+            }
+        }
+        notifyItemRangeChanged(0, movieList.size)
+    }
+
+    fun sortByDate(){
+        selectedSortBy = SortBy.ReleaseDate
+        if(movieList.isEmpty()) {
+            return
+        }
+        if (selectedSortType == SortType.Asc){
+            movieList.sortBy {
+                it.releaseDate
+            }
+        }else{
+            movieList.sortByDescending {
+                it.releaseDate
+            }
+        }
+        notifyItemRangeChanged(0, movieList.size)
+        Log.d("dates", movieList.map { it.releaseDate }.toList().toString());
     }
 
     private fun toggleSortType() {
@@ -39,15 +76,6 @@ class MoviesAdapter: RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
         } else {
             SortType.Asc
         }
-    }
-
-    private fun loadSortedData() {
-        if(selectedSortType == SortType.Asc) {
-            movieList.sortBy { it.title }
-        } else {
-            movieList.sortByDescending { it.title }
-        }
-        notifyItemRangeChanged(0, movieList.size)
     }
 
     inner class ViewHolder(binding: CardLayoutBinding): RecyclerView.ViewHolder(binding.root){

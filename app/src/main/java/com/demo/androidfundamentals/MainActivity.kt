@@ -2,11 +2,14 @@ package com.demo.androidfundamentals
 
 import android.os.Bundle
 import android.view.View
+import android.widget.RadioButton
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.demo.androidfundamentals.adapter.MoviesAdapter
+import com.demo.androidfundamentals.adapter.SortBy
 import com.demo.androidfundamentals.adapter.SortType
 import com.demo.androidfundamentals.databinding.ActivityMainBinding
 import com.demo.androidfundamentals.databinding.SortBottomSheetBinding
@@ -20,6 +23,7 @@ class MainActivity : AppCompatActivity() {
     private val moviesAdapter = MoviesAdapter()
     lateinit var gridLayoutManager: GridLayoutManager
     private lateinit var bottomSheetBinding: SortBottomSheetBinding
+    private lateinit var dialog: BottomSheetDialog
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,10 +63,24 @@ class MainActivity : AppCompatActivity() {
 
         binding.sortBtn.setOnClickListener {
             //moviesAdapter.sort()
-            val dialog = BottomSheetDialog(this)
+            dialog = BottomSheetDialog(this)
             bottomSheetBinding = SortBottomSheetBinding.inflate(layoutInflater)
             dialog.setContentView(bottomSheetBinding.root)
             dialog.show()
+        }
+    }
+
+    fun onRadioButtonClicked(view: View) {
+        if (view is RadioButton) {
+            if (bottomSheetBinding.byName.isChecked){
+                Toast.makeText(this, "By name clicked", Toast.LENGTH_SHORT).show()
+                moviesAdapter.sortByName()
+            }
+            if (bottomSheetBinding.byReleaseDate.isChecked){
+                Toast.makeText(this, "By release date clicked", Toast.LENGTH_SHORT).show()
+                moviesAdapter.sortByDate()
+            }
+            dialog.dismiss()
         }
     }
 }
