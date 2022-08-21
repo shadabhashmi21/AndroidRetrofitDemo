@@ -2,15 +2,12 @@ package com.demo.androidfundamentals
 
 import android.os.Bundle
 import android.view.View
-import android.widget.RadioButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.demo.androidfundamentals.adapter.MoviesAdapter
-import com.demo.androidfundamentals.adapter.SortBy
-import com.demo.androidfundamentals.adapter.SortType
 import com.demo.androidfundamentals.databinding.ActivityMainBinding
 import com.demo.androidfundamentals.databinding.SortBottomSheetBinding
 import com.demo.androidfundamentals.viewmodel.MainViewModel
@@ -61,26 +58,27 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        var isSortByNameSelected = true
         binding.sortBtn.setOnClickListener {
-            //moviesAdapter.sort()
             dialog = BottomSheetDialog(this)
             bottomSheetBinding = SortBottomSheetBinding.inflate(layoutInflater)
             dialog.setContentView(bottomSheetBinding.root)
             dialog.show()
-        }
-    }
+            bottomSheetBinding.byName.isChecked = isSortByNameSelected
+            bottomSheetBinding.byReleaseDate.isChecked = !isSortByNameSelected
 
-    fun onRadioButtonClicked(view: View) {
-        if (view is RadioButton) {
-            if (bottomSheetBinding.byName.isChecked){
-                Toast.makeText(this, "By name clicked", Toast.LENGTH_SHORT).show()
-                moviesAdapter.sortByName()
+            bottomSheetBinding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
+
+                if (checkedId == bottomSheetBinding.byName.id) {
+                    Toast.makeText(this, "By name clicked", Toast.LENGTH_SHORT).show()
+                    moviesAdapter.sortByName()
+                } else if (checkedId == bottomSheetBinding.byReleaseDate.id) {
+                    Toast.makeText(this, "By release date clicked", Toast.LENGTH_SHORT).show()
+                    isSortByNameSelected = isSortByNameSelected.not()
+                    moviesAdapter.sortByDate()
+                }
+                dialog.dismiss()
             }
-            if (bottomSheetBinding.byReleaseDate.isChecked){
-                Toast.makeText(this, "By release date clicked", Toast.LENGTH_SHORT).show()
-                moviesAdapter.sortByDate()
-            }
-            dialog.dismiss()
         }
     }
 }
