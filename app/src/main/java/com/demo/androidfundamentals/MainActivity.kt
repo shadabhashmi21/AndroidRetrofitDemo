@@ -59,6 +59,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         var isSortByNameSelected = true
+        var isAscending = true
         binding.sortBtn.setOnClickListener {
             dialog = BottomSheetDialog(this)
             bottomSheetBinding = SortBottomSheetBinding.inflate(layoutInflater)
@@ -78,6 +79,16 @@ class MainActivity : AppCompatActivity() {
                     moviesAdapter.sortByDate()
                 }
                 dialog.dismiss()
+            }
+
+            bottomSheetBinding.toggleButton.setOnClickListener{
+                isAscending = !isAscending
+
+                if (isAscending){
+                    bottomSheetBinding.toggleButton.setImageResource(R.drawable.ic_baseline_arrow_upward_24)
+                }else{
+                    bottomSheetBinding.toggleButton.setImageResource(R.drawable.ic_baseline_arrow_downward_24)
+                }
             }
         }
     }
