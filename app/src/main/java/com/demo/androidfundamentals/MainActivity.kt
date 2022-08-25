@@ -22,6 +22,17 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bottomSheetBinding: SortBottomSheetBinding
     private lateinit var dialog: BottomSheetDialog
 
+    enum class SortType {
+        Asc, Desc
+    }
+
+    enum class SortBy{
+        Name, ReleaseDate
+    }
+
+    private var selectedSortType = SortType.Asc
+    private var selectedSortBy = SortBy.Name
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,12 +44,13 @@ class MainActivity : AppCompatActivity() {
 
         binding.recyclerView.adapter = moviesAdapter
         binding.recyclerView.layoutManager = gridLayoutManager
+        initSortBottomSheet()
 
         viewModel.apiStatus.observe(this) {
             when (it) {
 
                 is MainViewModel.ApiStatus.Success -> {
-                    moviesAdapter.populateData(it.apiModel.results.toMutableList())
+                    moviesAdapter.populateData(it.apiModel.results.toMutableList(), selectedSortBy, selectedSortType)
                     binding.progressBar.visibility = View.GONE
                 }
                 is MainViewModel.ApiStatus.Loader -> {
@@ -58,38 +70,54 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        var isSortByNameSelected = true
-        var isAscending = true
         binding.sortBtn.setOnClickListener {
-            dialog = BottomSheetDialog(this)
-            bottomSheetBinding = SortBottomSheetBinding.inflate(layoutInflater)
-            dialog.setContentView(bottomSheetBinding.root)
             dialog.show()
-            bottomSheetBinding.byName.isChecked = isSortByNameSelected
-            bottomSheetBinding.byReleaseDate.isChecked = !isSortByNameSelected
-
-            bottomSheetBinding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
-
-                if (checkedId == bottomSheetBinding.byName.id) {
-                    Toast.makeText(this, "By name clicked", Toast.LENGTH_SHORT).show()
-                    moviesAdapter.sortByName()
-                } else if (checkedId == bottomSheetBinding.byReleaseDate.id) {
-                    Toast.makeText(this, "By release date clicked", Toast.LENGTH_SHORT).show()
-                    isSortByNameSelected = isSortByNameSelected.not()
-                    moviesAdapter.sortByDate()
-                }
-                dialog.dismiss()
-            }
-
-            bottomSheetBinding.toggleButton.setOnClickListener{
-                isAscending = !isAscending
-
-                if (isAscending){
-                    bottomSheetBinding.toggleButton.setImageResource(R.drawable.ic_baseline_arrow_upward_24)
-                }else{
-                    bottomSheetBinding.toggleButton.setImageResource(R.drawable.ic_baseline_arrow_downward_24)
-                }
-            }
         }
     }
+
+    private fun initSortBottomSheet(){
+        dialog = BottomSheetDialog(this)
+        bottomSheetBinding = SortBottomSheetBinding.inflate(layoutInflater)
+        bottomSheetBinding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
+            selectedSortBy = if(checkedId == bottomSheetBinding.byName.id) SortBy.Name else SortBy.ReleaseDate
+            loadSortByData(selectedSortBy)
+            dialog.dismiss()
+        }
+
+        bottomSheetBinding.toggleButton.setOnClickListener{
+            selectedSortType = if(selectedSortType == SortType.Asc) SortType.Desc else SortType.Asc
+            loadSortTypeData(selectedSortType)
+            dialog.dismiss()
+        }
+
+        // load default data
+        if (selectedSortBy == SortBy.Name) {
+            bottomSheetBinding.byName.isChecked = true
+        } else {
+            bottomSheetBinding.byReleaseDate.isChecked = true
+        }
+        loadSortTypeData(selectedSortType)
+        //
+
+        dialog.setContentView(bottomSheetBinding.root)
+    }
+
+    private fun loadSortByData(sortBy: SortBy) {
+        if (sortBy == SortBy.Name) {
+            Toast.makeText(this, "By name clicked", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "By release date clicked", Toast.LENGTH_SHORT).show()
+        }
+        moviesAdapter.sortData(selectedSortBy, selectedSortType)
+    }
+
+    private fun loadSortTypeData(sortType: SortType) {
+        if (sortType == SortType.Asc){
+            bottomSheetBinding.toggleButton.setImageResource(R.drawable.ic_baseline_arrow_upward_24)
+        }else{
+            bottomSheetBinding.toggleButton.setImageResource(R.drawable.ic_baseline_arrow_downward_24)
+        }
+        moviesAdapter.sortData(selectedSortBy, selectedSortType)
+    }
+
 }

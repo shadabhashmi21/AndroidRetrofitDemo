@@ -7,76 +7,48 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.demo.androidfundamentals.MainActivity
 import com.demo.androidfundamentals.databinding.CardLayoutBinding
 import com.demo.androidfundamentals.models.MovieModel
 import com.squareup.picasso.Picasso
-
-enum class SortType {
-    Asc, Desc
-}
-
-enum class SortBy{
-    Name, ReleaseDate
-}
 
 class MoviesAdapter: RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
 
     private val movieList: MutableList<MovieModel> = mutableListOf()
 
-    private var selectedSortType = SortType.Asc
-    private var selectedSortBy = SortBy.Name
-
-    fun populateData(results: List<MovieModel>) {
+    fun populateData(results: List<MovieModel>, selectedSortBy: MainActivity.SortBy, selectedSortType: MainActivity.SortType) {
         movieList.addAll(results)
-        if (selectedSortBy == SortBy.Name){
-            sortByName()
-        }else{
-            sortByDate()
-        }
+        sortData(selectedSortBy, selectedSortType)
     }
 
-    fun sortByName(){
-        selectedSortBy = SortBy.Name
+    fun sortData(selectedSortBy: MainActivity.SortBy, selectedSortType: MainActivity.SortType) {
         if(movieList.isEmpty()) {
             return
         }
-        if (selectedSortType == SortType.Asc){
-            movieList.sortBy {
-                it.title
+        if(selectedSortBy == MainActivity.SortBy.Name) {
+            if (selectedSortType == MainActivity.SortType.Asc){
+                movieList.sortBy {
+                    it.title
+                }
+            }else{
+                movieList.sortByDescending {
+                    it.title
+                }
             }
-        }else{
-            movieList.sortByDescending {
-                it.title
+        } else if(selectedSortBy == MainActivity.SortBy.ReleaseDate) {
+            if (selectedSortType == MainActivity.SortType.Asc){
+                movieList.sortBy {
+                    it.releaseDate
+                }
+            }else{
+                movieList.sortByDescending {
+                    it.releaseDate
+                }
             }
         }
         notifyItemRangeChanged(0, movieList.size)
     }
 
-    fun sortByDate(){
-        selectedSortBy = SortBy.ReleaseDate
-        if(movieList.isEmpty()) {
-            return
-        }
-        if (selectedSortType == SortType.Asc){
-            movieList.sortBy {
-                it.releaseDate
-            }
-        }else{
-            movieList.sortByDescending {
-                it.releaseDate
-            }
-        }
-        notifyItemRangeChanged(0, movieList.size)
-        Log.d("dates", movieList.map { it.releaseDate }.toList().toString());
-    }
-
-    private fun toggleSortType() {
-        selectedSortType = if(selectedSortType == SortType.Asc) {
-            SortType.Desc
-        } else {
-            SortType.Asc
-        }
-    }
 
     inner class ViewHolder(binding: CardLayoutBinding): RecyclerView.ViewHolder(binding.root){
         val moviePoster: ImageView = binding.moviePoster
