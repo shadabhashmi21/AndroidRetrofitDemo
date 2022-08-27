@@ -5,8 +5,9 @@
       <map>
         <entry key="..\:/Projects/Flutter/AndroidFundamentals/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/Projects/Flutter/AndroidFundamentals/app/src/main/res/layout/card_layout.xml" value="0.1875" />
+        <entry key="..\:/Projects/Flutter/AndroidFundamentals/app/src/main/res/layout/filter_bottom_sheet.xml" value="0.2" />
         <entry key="..\:/Projects/Flutter/AndroidFundamentals/app/src/main/res/layout/movies_grid.xml" value="0.25" />
-        <entry key="..\:/Projects/Flutter/AndroidFundamentals/app/src/main/res/layout/sort_bottom_sheet.xml" value="0.24895833333333334" />
+        <entry key="..\:/Projects/Flutter/AndroidFundamentals/app/src/main/res/layout/sort_bottom_sheet.xml" value="0.264" />
       </map>
     </option>
   </component>

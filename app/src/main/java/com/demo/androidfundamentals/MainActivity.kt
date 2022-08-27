@@ -20,13 +20,13 @@ class MainActivity : AppCompatActivity() {
     private val moviesAdapter = MoviesAdapter()
     lateinit var gridLayoutManager: GridLayoutManager
     private lateinit var bottomSheetBinding: SortBottomSheetBinding
-    private lateinit var dialog: BottomSheetDialog
+    private lateinit var sortDialog: BottomSheetDialog
 
     enum class SortType {
         Asc, Desc
     }
 
-    enum class SortBy{
+    enum class SortBy {
         Name, ReleaseDate
     }
 
@@ -50,7 +50,11 @@ class MainActivity : AppCompatActivity() {
             when (it) {
 
                 is MainViewModel.ApiStatus.Success -> {
-                    moviesAdapter.populateData(it.apiModel.results.toMutableList(), selectedSortBy, selectedSortType)
+                    moviesAdapter.populateData(
+                        it.apiModel.results.toMutableList(),
+                        selectedSortBy,
+                        selectedSortType
+                    )
                     binding.progressBar.visibility = View.GONE
                 }
                 is MainViewModel.ApiStatus.Loader -> {
@@ -71,23 +75,24 @@ class MainActivity : AppCompatActivity() {
         })
 
         binding.sortBtn.setOnClickListener {
-            dialog.show()
+            sortDialog.show()
         }
     }
 
-    private fun initSortBottomSheet(){
-        dialog = BottomSheetDialog(this)
+    private fun initSortBottomSheet() {
+        sortDialog = BottomSheetDialog(this)
         bottomSheetBinding = SortBottomSheetBinding.inflate(layoutInflater)
         bottomSheetBinding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
-            selectedSortBy = if(checkedId == bottomSheetBinding.byName.id) SortBy.Name else SortBy.ReleaseDate
+            selectedSortBy =
+                if (checkedId == bottomSheetBinding.byName.id) SortBy.Name else SortBy.ReleaseDate
             loadSortByData(selectedSortBy)
-            dialog.dismiss()
+            sortDialog.dismiss()
         }
 
-        bottomSheetBinding.toggleButton.setOnClickListener{
-            selectedSortType = if(selectedSortType == SortType.Asc) SortType.Desc else SortType.Asc
+        bottomSheetBinding.toggleButton.setOnClickListener {
+            selectedSortType = if (selectedSortType == SortType.Asc) SortType.Desc else SortType.Asc
             loadSortTypeData(selectedSortType)
-            dialog.dismiss()
+            sortDialog.dismiss()
         }
 
         // load default data
@@ -99,7 +104,7 @@ class MainActivity : AppCompatActivity() {
         loadSortTypeData(selectedSortType)
         //
 
-        dialog.setContentView(bottomSheetBinding.root)
+        sortDialog.setContentView(bottomSheetBinding.root)
     }
 
     private fun loadSortByData(sortBy: SortBy) {
@@ -112,9 +117,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadSortTypeData(sortType: SortType) {
-        if (sortType == SortType.Asc){
+        if (sortType == SortType.Asc) {
             bottomSheetBinding.toggleButton.setImageResource(R.drawable.ic_baseline_arrow_upward_24)
-        }else{
+        } else {
             bottomSheetBinding.toggleButton.setImageResource(R.drawable.ic_baseline_arrow_downward_24)
         }
         moviesAdapter.sortData(selectedSortBy, selectedSortType)
