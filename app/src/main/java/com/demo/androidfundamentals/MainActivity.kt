@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.demo.androidfundamentals.adapter.MoviesAdapter
 import com.demo.androidfundamentals.databinding.ActivityMainBinding
+import com.demo.androidfundamentals.databinding.FilterBottomSheetBinding
 import com.demo.androidfundamentals.databinding.SortBottomSheetBinding
 import com.demo.androidfundamentals.viewmodel.MainViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -19,8 +20,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MainViewModel
     private val moviesAdapter = MoviesAdapter()
     lateinit var gridLayoutManager: GridLayoutManager
-    private lateinit var bottomSheetBinding: SortBottomSheetBinding
+    private lateinit var sortBottomSheetBinding: SortBottomSheetBinding
     private lateinit var sortDialog: BottomSheetDialog
+    private lateinit var filterBottomSheetBinding: FilterBottomSheetBinding
+    private lateinit var filterDialog: BottomSheetDialog
 
     enum class SortType {
         Asc, Desc
@@ -45,6 +48,7 @@ class MainActivity : AppCompatActivity() {
         binding.recyclerView.adapter = moviesAdapter
         binding.recyclerView.layoutManager = gridLayoutManager
         initSortBottomSheet()
+        initFilterBottomSheet()
 
         viewModel.apiStatus.observe(this) {
             when (it) {
@@ -77,19 +81,29 @@ class MainActivity : AppCompatActivity() {
         binding.sortBtn.setOnClickListener {
             sortDialog.show()
         }
+
+        binding.filterBtn.setOnClickListener {
+            filterDialog.show()
+        }
+    }
+
+    private fun initFilterBottomSheet(){
+        filterDialog = BottomSheetDialog(this)
+        filterBottomSheetBinding = FilterBottomSheetBinding.inflate(layoutInflater)
+        filterDialog.setContentView(filterBottomSheetBinding.root)
     }
 
     private fun initSortBottomSheet() {
         sortDialog = BottomSheetDialog(this)
-        bottomSheetBinding = SortBottomSheetBinding.inflate(layoutInflater)
-        bottomSheetBinding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
+        sortBottomSheetBinding = SortBottomSheetBinding.inflate(layoutInflater)
+        sortBottomSheetBinding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
             selectedSortBy =
-                if (checkedId == bottomSheetBinding.byName.id) SortBy.Name else SortBy.ReleaseDate
+                if (checkedId == sortBottomSheetBinding.byName.id) SortBy.Name else SortBy.ReleaseDate
             loadSortByData(selectedSortBy)
             sortDialog.dismiss()
         }
 
-        bottomSheetBinding.toggleButton.setOnClickListener {
+        sortBottomSheetBinding.toggleButton.setOnClickListener {
             selectedSortType = if (selectedSortType == SortType.Asc) SortType.Desc else SortType.Asc
             loadSortTypeData(selectedSortType)
             sortDialog.dismiss()
@@ -97,14 +111,14 @@ class MainActivity : AppCompatActivity() {
 
         // load default data
         if (selectedSortBy == SortBy.Name) {
-            bottomSheetBinding.byName.isChecked = true
+            sortBottomSheetBinding.byName.isChecked = true
         } else {
-            bottomSheetBinding.byReleaseDate.isChecked = true
+            sortBottomSheetBinding.byReleaseDate.isChecked = true
         }
         loadSortTypeData(selectedSortType)
         //
 
-        sortDialog.setContentView(bottomSheetBinding.root)
+        sortDialog.setContentView(sortBottomSheetBinding.root)
     }
 
     private fun loadSortByData(sortBy: SortBy) {
@@ -118,9 +132,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadSortTypeData(sortType: SortType) {
         if (sortType == SortType.Asc) {
-            bottomSheetBinding.toggleButton.setImageResource(R.drawable.ic_baseline_arrow_upward_24)
+            sortBottomSheetBinding.toggleButton.setImageResource(R.drawable.ic_baseline_arrow_upward_24)
         } else {
-            bottomSheetBinding.toggleButton.setImageResource(R.drawable.ic_baseline_arrow_downward_24)
+            sortBottomSheetBinding.toggleButton.setImageResource(R.drawable.ic_baseline_arrow_downward_24)
         }
         moviesAdapter.sortData(selectedSortBy, selectedSortType)
     }
