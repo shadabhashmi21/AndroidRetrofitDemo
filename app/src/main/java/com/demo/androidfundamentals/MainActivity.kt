@@ -1,5 +1,6 @@
 package com.demo.androidfundamentals
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -13,6 +14,8 @@ import com.demo.androidfundamentals.databinding.FilterBottomSheetBinding
 import com.demo.androidfundamentals.databinding.SortBottomSheetBinding
 import com.demo.androidfundamentals.viewmodel.MainViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipDrawable
 
 
 class MainActivity : AppCompatActivity() {
@@ -47,8 +50,6 @@ class MainActivity : AppCompatActivity() {
 
         binding.recyclerView.adapter = moviesAdapter
         binding.recyclerView.layoutManager = gridLayoutManager
-        initSortBottomSheet()
-        initFilterBottomSheet()
 
         viewModel.apiStatus.observe(this) {
             when (it) {
@@ -60,6 +61,8 @@ class MainActivity : AppCompatActivity() {
                         selectedSortType
                     )
                     binding.progressBar.visibility = View.GONE
+                    initSortBottomSheet()
+                    initFilterBottomSheet()
                 }
                 is MainViewModel.ApiStatus.Loader -> {
                     binding.progressBar.visibility = View.VISIBLE
@@ -87,10 +90,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun initFilterBottomSheet(){
+    private fun initFilterBottomSheet() {
         filterDialog = BottomSheetDialog(this)
         filterBottomSheetBinding = FilterBottomSheetBinding.inflate(layoutInflater)
         filterDialog.setContentView(filterBottomSheetBinding.root)
+
+        moviesAdapter.getMovies().forEach {
+            filterBottomSheetBinding.chipGroup.addView(createTagChip(this, it))
+        }
     }
 
     private fun initSortBottomSheet() {
@@ -139,4 +146,11 @@ class MainActivity : AppCompatActivity() {
         moviesAdapter.sortData(selectedSortBy, selectedSortType)
     }
 
+    private fun createTagChip(context: Context, chipName: String): Chip {
+        return Chip(context).apply {
+            text = chipName
+            isCheckable = true
+        }
+
+    }
 }
