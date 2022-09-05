@@ -2,6 +2,7 @@ package com.demo.androidfundamentals
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -15,7 +16,6 @@ import com.demo.androidfundamentals.databinding.SortBottomSheetBinding
 import com.demo.androidfundamentals.viewmodel.MainViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipDrawable
 
 
 class MainActivity : AppCompatActivity() {
@@ -94,9 +94,17 @@ class MainActivity : AppCompatActivity() {
         filterDialog = BottomSheetDialog(this)
         filterBottomSheetBinding = FilterBottomSheetBinding.inflate(layoutInflater)
         filterDialog.setContentView(filterBottomSheetBinding.root)
+        val chipGroup = filterBottomSheetBinding.chipGroup
 
         moviesAdapter.getMovies().forEach {
-            filterBottomSheetBinding.chipGroup.addView(createTagChip(this, it))
+            chipGroup.addView(createTagChip(this, it))
+        }
+
+        filterBottomSheetBinding.applyButton.setOnClickListener {
+            val filterList = chipGroup.checkedChipIds.map { id ->
+                chipGroup.findViewById<Chip>(id).text
+            }
+            Log.d("filterList", filterList.toString())
         }
     }
 
