@@ -151,6 +151,5 @@ class MainActivity : AppCompatActivity() {
             text = chipName
             isCheckable = true
         }
-
     }
 }

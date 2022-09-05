@@ -1,5 +1,8 @@
 package com.demo.androidfundamentals.adapter
 
+import android.annotation.SuppressLint
+import android.icu.text.SimpleDateFormat
+import android.os.Build
 import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,6 +13,8 @@ import com.demo.androidfundamentals.MainActivity
 import com.demo.androidfundamentals.databinding.CardLayoutBinding
 import com.demo.androidfundamentals.models.MovieModel
 import com.squareup.picasso.Picasso
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class MoviesAdapter : RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
 
@@ -24,10 +29,20 @@ class MoviesAdapter : RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
         sortData(selectedSortBy, selectedSortType)
     }
 
+
+    @SuppressLint("SimpleDateFormat")
     fun getMovies(): List<String> {
         val movieDates: MutableList<String> = mutableListOf()
+        val parser = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            SimpleDateFormat("yyyy-MM-dd")
+        } else {
+            TODO("VERSION.SDK_INT < N")
+        }
+        val formatter = SimpleDateFormat("yyyy")
+
         movieList.forEach {
-            movieDates.add(it.releaseDate.substring(0,4))
+            val output: String = formatter.format(parser.parse(it.releaseDate))
+            movieDates.add(output)
         }
         return movieDates.distinct()
     }
