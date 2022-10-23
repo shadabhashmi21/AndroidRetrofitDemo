@@ -5,7 +5,7 @@ import com.demo.androidfundamentals.models.MovieModel
 
 fun List<MovieModel>.applyFilterAndSort(sortBy: MainActivity.SortBy, sortType: MainActivity.SortType, filteredList: List<String> = mutableListOf()): List<MovieModel> {
     val filteredAndSortedMovieList = if(filteredList.isNotEmpty()) {
-        filter { filteredList.contains(AppUtils.getMovieYear(it)) }.toMutableList()
+        filter { filteredList.contains(DateUtils.getMovieYear(it.releaseDate)) }.toMutableList()
     } else {
         this.toMutableList()
     }
@@ -41,8 +41,8 @@ fun List<MovieModel>.getDistinctMovieYears(): List<String> {
     val movieDates: MutableList<String> = mutableListOf()
 
 
-    forEach {
-        movieDates.add(AppUtils.getMovieYear(it))
+    map {
+        movieDates.add(DateUtils.getMovieYear(it.releaseDate))
     }
     return movieDates.distinct()
 }

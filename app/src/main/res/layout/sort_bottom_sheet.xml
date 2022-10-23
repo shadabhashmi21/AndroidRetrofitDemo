@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Sort"
+        android:text="@string/sort"
         android:textSize="36sp"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -33,13 +33,13 @@
             android:id="@+id/by_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="By Name" />
+            android:text="@string/by_name" />
 
         <RadioButton
             android:id="@+id/by_release_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="By Release Date" />
+            android:text="@string/by_release_date" />
     </RadioGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

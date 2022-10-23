@@ -9,13 +9,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Filter"
+        android:text="@string/filter"
         android:textSize="36sp"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/apply_button"
-        android:text="Apply"
+        android:text="@string/apply"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintRight_toRightOf="parent"
@@ -30,27 +30,6 @@
         app:layout_constraintTop_toBottomOf="@id/text_view"
         android:paddingVertical="10dp"
         android:paddingHorizontal="5dp">
-
-        <!--<com.google.android.material.chip.Chip
-            android:id="@+id/chipCpp"
-            style="@style/Widget.MaterialComponents.Chip.Filter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="C++" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chipJava"
-            style="@style/Widget.MaterialComponents.Chip.Filter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="JAVA" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chipPython"
-            style="@style/Widget.MaterialComponents.Chip.Filter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Python" />-->
 
     </com.google.android.material.chip.ChipGroup>
 
