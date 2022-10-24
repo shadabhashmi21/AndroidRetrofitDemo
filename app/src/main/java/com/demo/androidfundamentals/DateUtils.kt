@@ -1,13 +1,12 @@
 package com.demo.androidfundamentals
 
-import android.annotation.SuppressLint
 import java.text.SimpleDateFormat
+import java.util.*
 
 object DateUtils {
-    @SuppressLint("SimpleDateFormat")
     fun getMovieYear(releaseDate: String): String {
-        val parser = SimpleDateFormat("yyyy-MM-dd")
-        val formatter = SimpleDateFormat("yyyy")
+        val parser = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        val formatter = SimpleDateFormat("yyyy", Locale.US)
         return formatter.format(parser.parse(releaseDate)!!)
     }
 }
