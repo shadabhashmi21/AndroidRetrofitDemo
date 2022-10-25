@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">AndroidFundamentals</string>
+    <string name="filter">Filter</string>
+    <string name="sort">Sort</string>
+    <string name="apply">Apply</string>
+    <string name="by_release_date">By Release Date</string>
+    <string name="by_name">By Name</string>
 </resources>
