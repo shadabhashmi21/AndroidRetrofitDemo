@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.demo.androidfundamentals.models.APIModel
-import com.demo.androidfundamentals.models.Model
 import com.demo.androidfundamentals.retrofit.RetrofitInstance
 import com.demo.androidfundamentals.source.DataRepository
 import kotlinx.coroutines.Dispatchers
@@ -43,6 +42,6 @@ class MainViewModel: ViewModel() {
     sealed class ApiStatus {
         object Loader : ApiStatus()
         data class Error(val message: String): ApiStatus()
-        data class Success(val apiModel: Model): ApiStatus()
+        data class Success(val apiModel: APIModel): ApiStatus()
     }
 }

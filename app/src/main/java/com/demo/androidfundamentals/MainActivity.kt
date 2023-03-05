@@ -1,12 +1,8 @@
 package com.demo.androidfundamentals
 
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -15,8 +11,7 @@ import com.demo.androidfundamentals.adapter.MoviesAdapter
 import com.demo.androidfundamentals.databinding.ActivityMainBinding
 import com.demo.androidfundamentals.databinding.FilterBottomSheetBinding
 import com.demo.androidfundamentals.databinding.SortBottomSheetBinding
-import com.demo.androidfundamentals.models.Model
-import com.demo.androidfundamentals.models.MovieModel
+import com.demo.androidfundamentals.models.APIModel
 import com.demo.androidfundamentals.viewmodel.MainViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
@@ -31,7 +26,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sortDialog: BottomSheetDialog
     private lateinit var filterBottomSheetBinding: FilterBottomSheetBinding
     private lateinit var filterDialog: BottomSheetDialog
-    private lateinit var moviesList: Model
+    private lateinit var moviesList: APIModel
 
     enum class SortType {
         Asc, Desc
