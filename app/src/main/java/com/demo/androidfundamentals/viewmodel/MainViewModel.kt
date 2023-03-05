@@ -17,14 +17,7 @@ class MainViewModel: ViewModel() {
 
     val apiStatus = MutableLiveData<ApiStatus>()
 
-    var pageNumber by Delegates.notNull<Int>()
-
-    fun fetchMovieList(fetchNextPage: Boolean = false){
-        if(fetchNextPage.not()) {
-            pageNumber = 1
-        } else {
-            pageNumber++
-        }
+    fun fetchMovieList(){
         apiStatus.value = ApiStatus.Loader
         viewModelScope.launch {
             val response = withContext(Dispatchers.IO){

@@ -39,10 +39,9 @@ class MoviesAdapter : RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val movie = movieList[position]
-        val imgUrl = "https://image.tmdb.org/t/p/w500/${movie.image}"
         d("Example", "Name : ${movie.title}")
         holder.movieTitle.text = movie.title
-        Picasso.get().load(imgUrl).into(holder.moviePoster)
+        Picasso.get().load(movie.image).into(holder.moviePoster)
     }
 }
 

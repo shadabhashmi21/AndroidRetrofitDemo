@@ -2,7 +2,9 @@ package com.demo.androidfundamentals
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -12,6 +14,7 @@ import com.demo.androidfundamentals.databinding.ActivityMainBinding
 import com.demo.androidfundamentals.databinding.FilterBottomSheetBinding
 import com.demo.androidfundamentals.databinding.SortBottomSheetBinding
 import com.demo.androidfundamentals.models.APIModel
+import com.demo.androidfundamentals.models.MovieModel
 import com.demo.androidfundamentals.viewmodel.MainViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
@@ -26,7 +29,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sortDialog: BottomSheetDialog
     private lateinit var filterBottomSheetBinding: FilterBottomSheetBinding
     private lateinit var filterDialog: BottomSheetDialog
-    private lateinit var moviesList: APIModel
+    private val moviesList = mutableListOf<MovieModel>()
 
     enum class SortType {
         Asc, Desc
@@ -55,9 +58,8 @@ class MainActivity : AppCompatActivity() {
             when (it) {
 
                 is MainViewModel.ApiStatus.Success -> {
-                    //moviesList.addAll(it.apiModel.results)
-                    moviesList = it.apiModel
-                    //loadFilteredAndSortedMovies(selectedSortBy, selectedSortType)
+                    moviesList.addAll(it.apiModel.items)
+                    loadFilteredAndSortedMovies(selectedSortBy, selectedSortType)
                     binding.progressBar.visibility = View.GONE
                     initSortBottomSheet()
                     initFilterBottomSheet()
@@ -74,7 +76,7 @@ class MainActivity : AppCompatActivity() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (!recyclerView.canScrollVertically(1)) {
-                    viewModel.fetchMovieList(true)
+                    viewModel.fetchMovieList()
                 }
             }
         })
@@ -94,18 +96,18 @@ class MainActivity : AppCompatActivity() {
         filterDialog.setContentView(filterBottomSheetBinding.root)
         val chipGroup = filterBottomSheetBinding.chipGroup
 
-        /*moviesList.getDistinctMovieYears().forEach {
+        moviesList.getDistinctMovieYears().forEach {
             chipGroup.addView(createTagChip(this, it))
-        }*/
+        }
 
-        /*filterBottomSheetBinding.applyButton.setOnClickListener {
+        filterBottomSheetBinding.applyButton.setOnClickListener {
             val filterList = chipGroup.checkedChipIds.map { id ->
                 chipGroup.findViewById<Chip>(id).text.toString()
             }
             loadFilteredAndSortedMovies(selectedSortBy, selectedSortType, filterList)
             filterDialog.dismiss()
             Log.d("filterList", filterList.toString())
-        }*/
+        }
     }
 
     private fun initSortBottomSheet() {
@@ -136,19 +138,19 @@ class MainActivity : AppCompatActivity() {
         sortDialog.setContentView(sortBottomSheetBinding.root)
     }
 
-    /*private fun loadFilteredAndSortedMovies(sortBy: SortBy, sortType: SortType, filteredList: List<String> = mutableListOf()) {
+    private fun loadFilteredAndSortedMovies(sortBy: SortBy, sortType: SortType, filteredList: List<String> = mutableListOf()) {
         val filteredAndSortedMovies = moviesList.applyFilterAndSort(sortBy, sortType, filteredList)
         moviesAdapter.populateData(filteredAndSortedMovies)
-    }*/
+    }
 
-    /*private fun loadSortByData(sortBy: SortBy) {
-        *//*if (sortBy == SortBy.Name) {
+    private fun loadSortByData(sortBy: SortBy) {
+        if (sortBy == SortBy.Name) {
             Toast.makeText(this, "By name clicked", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(this, "By release date clicked", Toast.LENGTH_SHORT).show()
-        }*//*
+        }
         loadFilteredAndSortedMovies(selectedSortBy, selectedSortType)
-    }*/
+    }
 
     private fun loadSortTypeData(sortType: SortType) {
         if (sortType == SortType.Asc) {

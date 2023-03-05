@@ -3,13 +3,13 @@ package com.demo.androidfundamentals
 import android.util.Log
 import com.demo.androidfundamentals.models.MovieModel
 
-/*fun List<MovieModel>.applyFilterAndSort(
+fun List<MovieModel>.applyFilterAndSort(
     sortBy: MainActivity.SortBy,
     sortType: MainActivity.SortType,
     filteredList: List<String> = mutableListOf()
 ): List<MovieModel> {
     val filteredAndSortedMovieList = if (filteredList.isNotEmpty()) {
-        filter { filteredList.contains(DateUtils.getMovieYear(it.releaseDate)) }.toMutableList()
+        filter { filteredList.contains(it.year) }.toMutableList()
     } else {
         this.toMutableList()
     }
@@ -29,22 +29,21 @@ import com.demo.androidfundamentals.models.MovieModel
     } else if (sortBy == MainActivity.SortBy.ReleaseDate) {
         if (sortType == MainActivity.SortType.Asc) {
             filteredAndSortedMovieList.sortBy {
-                it.releaseDate
+                it.year
             }
         } else {
             filteredAndSortedMovieList.sortByDescending {
-                it.releaseDate
+                it.year
             }
         }
     }
 
     return filteredAndSortedMovieList
-}*/
+}
 
-/*
 fun List<MovieModel>.getDistinctMovieYears(): List<String> {
 
     return map {
-        DateUtils.getMovieYear(it.releaseDate)
+        it.year
     }.distinct()
-}*/
+}
