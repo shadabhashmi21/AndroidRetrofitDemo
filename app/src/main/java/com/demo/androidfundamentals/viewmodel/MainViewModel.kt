@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.demo.androidfundamentals.models.APIModel
+import com.demo.androidfundamentals.models.Model
 import com.demo.androidfundamentals.retrofit.RetrofitInstance
 import com.demo.androidfundamentals.source.DataRepository
 import kotlinx.coroutines.Dispatchers
@@ -28,7 +29,7 @@ class MainViewModel: ViewModel() {
         apiStatus.value = ApiStatus.Loader
         viewModelScope.launch {
             val response = withContext(Dispatchers.IO){
-                dataRepository.getMovies(pageNumber)
+                dataRepository.getMovies()
             }
             if(response.isSuccessful) {
                 apiStatus.value = ApiStatus.Success(response.body()!!)
@@ -42,6 +43,6 @@ class MainViewModel: ViewModel() {
     sealed class ApiStatus {
         object Loader : ApiStatus()
         data class Error(val message: String): ApiStatus()
-        data class Success(val apiModel: APIModel): ApiStatus()
+        data class Success(val apiModel: Model): ApiStatus()
     }
 }

@@ -3,7 +3,7 @@ package com.demo.androidfundamentals
 import android.util.Log
 import com.demo.androidfundamentals.models.MovieModel
 
-fun List<MovieModel>.applyFilterAndSort(
+/*fun List<MovieModel>.applyFilterAndSort(
     sortBy: MainActivity.SortBy,
     sortType: MainActivity.SortType,
     filteredList: List<String> = mutableListOf()
@@ -39,11 +39,12 @@ fun List<MovieModel>.applyFilterAndSort(
     }
 
     return filteredAndSortedMovieList
-}
+}*/
 
+/*
 fun List<MovieModel>.getDistinctMovieYears(): List<String> {
 
     return map {
         DateUtils.getMovieYear(it.releaseDate)
     }.distinct()
-}
+}*/

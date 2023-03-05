@@ -6,7 +6,7 @@ import retrofit2.create
 
 object RetrofitInstance {
     private val builder = Retrofit.Builder()
-        .baseUrl("https://api.themoviedb.org")
+        .baseUrl("https://imdb-api.com/en/API/")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
