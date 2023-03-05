@@ -38,6 +38,8 @@ class MoviesAdapter : RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
     override fun getItemCount(): Int = movieList.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.moviePoster.layoutParams.height = 500
+        holder.moviePoster.layoutParams.width = 500
         val movie = movieList[position]
         d("Example", "Name : ${movie.title}")
         holder.movieTitle.text = movie.title
