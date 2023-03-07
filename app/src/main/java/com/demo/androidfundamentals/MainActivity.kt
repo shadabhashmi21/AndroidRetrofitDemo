@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sortDialog: BottomSheetDialog
     private lateinit var filterBottomSheetBinding: FilterBottomSheetBinding
     private lateinit var filterDialog: BottomSheetDialog
-    private val moviesList = mutableListOf<MovieModel>()
+    private var moviesList = listOf<MovieModel>()
 
     enum class SortType {
         Asc, Desc
@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
             when (it) {
 
                 is MainViewModel.ApiStatus.Success -> {
-                    moviesList.addAll(it.apiModel.items)
+                    moviesList = it.apiModel.items
                     loadFilteredAndSortedMovies(selectedSortBy, selectedSortType)
                     binding.progressBar.visibility = View.GONE
                     initSortBottomSheet()
