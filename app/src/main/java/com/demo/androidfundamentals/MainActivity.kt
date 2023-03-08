@@ -9,7 +9,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
 import com.demo.androidfundamentals.adapter.MoviesAdapter
+import com.demo.androidfundamentals.database.Movie
+import com.demo.androidfundamentals.database.MovieDatabase
 import com.demo.androidfundamentals.databinding.ActivityMainBinding
 import com.demo.androidfundamentals.databinding.FilterBottomSheetBinding
 import com.demo.androidfundamentals.databinding.SortBottomSheetBinding
@@ -18,6 +21,9 @@ import com.demo.androidfundamentals.models.MovieModel
 import com.demo.androidfundamentals.viewmodel.MainViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
@@ -30,6 +36,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var filterBottomSheetBinding: FilterBottomSheetBinding
     private lateinit var filterDialog: BottomSheetDialog
     private var moviesList = listOf<MovieModel>()
+    private lateinit var database: MovieDatabase
 
     enum class SortType {
         Asc, Desc
@@ -51,6 +58,8 @@ class MainActivity : AppCompatActivity() {
 
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
+        database = Room.databaseBuilder(applicationContext, MovieDatabase::class.java, "movieDB").build()
+
         binding.recyclerView.adapter = moviesAdapter
         binding.recyclerView.layoutManager = gridLayoutManager
 
@@ -61,6 +70,7 @@ class MainActivity : AppCompatActivity() {
                     moviesList = it.apiModel.items
                     //loadFilteredAndSortedMovies(selectedSortBy, selectedSortType)
                     moviesAdapter.populateData(moviesList)
+                    saveToDatabase(moviesList)
                     binding.progressBar.visibility = View.GONE
                     initSortBottomSheet()
                     initFilterBottomSheet()
@@ -88,6 +98,14 @@ class MainActivity : AppCompatActivity() {
 
         binding.filterBtn.setOnClickListener {
             filterDialog.show()
+        }
+    }
+
+    private fun saveToDatabase(movieList: List<MovieModel>){
+        GlobalScope.launch {
+            movieList.forEach {
+                database.movieDao().insertMovie(Movie(0, it.title, it.imDbRating, it.image, it.rank, it.year))
+            }
         }
     }
 
