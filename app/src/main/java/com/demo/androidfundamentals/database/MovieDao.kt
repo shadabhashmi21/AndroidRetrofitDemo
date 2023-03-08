@@ -7,7 +7,7 @@ import com.demo.androidfundamentals.models.MovieModel
 @Dao
 interface MovieDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMovie(movie: MovieModel)
 
     @Update
