@@ -83,14 +83,14 @@ class MainActivity : AppCompatActivity() {
         }
         viewModel.fetchMovieList()
 
-        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        /*binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (!recyclerView.canScrollVertically(1)) {
                     viewModel.fetchMovieList()
                 }
             }
-        })
+        })*/
 
         binding.sortBtn.setOnClickListener {
             sortDialog.show()
