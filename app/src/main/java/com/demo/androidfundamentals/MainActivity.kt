@@ -59,7 +59,8 @@ class MainActivity : AppCompatActivity() {
 
                 is MainViewModel.ApiStatus.Success -> {
                     moviesList = it.apiModel.items
-                    loadFilteredAndSortedMovies(selectedSortBy, selectedSortType)
+                    //loadFilteredAndSortedMovies(selectedSortBy, selectedSortType)
+                    moviesAdapter.populateData(moviesList)
                     binding.progressBar.visibility = View.GONE
                     initSortBottomSheet()
                     initFilterBottomSheet()
