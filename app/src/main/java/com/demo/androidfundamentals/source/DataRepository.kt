@@ -10,15 +10,17 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 
-class DataRepository() : KoinComponent {
+class DataRepository : KoinComponent {
     private val movieDao: MovieDao by inject()
 
     private val moviesAPI = RetrofitInstance.service
-    private val repositoryState = MutableLiveData<RepositoryState>()
+    val repositoryState = MutableLiveData<RepositoryState>()
 
-    suspend fun loadData() {
+    suspend fun populateData() {
         repositoryState.value = RepositoryState.Loader
-        val dataInDB = movieDao.getMovies()
+        val dataInDB = withContext(Dispatchers.IO){
+            movieDao.getMovies()
+        }
         if (dataInDB.isNotEmpty()) {
             repositoryState.value = RepositoryState.Success(dataInDB)
         } else {
@@ -33,6 +35,7 @@ class DataRepository() : KoinComponent {
         }
         if (response.isSuccessful) {
             repositoryState.value = RepositoryState.Success(response.body()?.items!!)
+            movieDao.insertMovie(response.body()?.items!!)
         } else {
             repositoryState.value = RepositoryState.Error(response.errorBody().toString())
         }

@@ -15,6 +15,7 @@ import com.demo.androidfundamentals.databinding.ActivityMainBinding
 import com.demo.androidfundamentals.databinding.FilterBottomSheetBinding
 import com.demo.androidfundamentals.databinding.SortBottomSheetBinding
 import com.demo.androidfundamentals.models.MovieModel
+import com.demo.androidfundamentals.source.DataRepository
 import com.demo.androidfundamentals.viewmodel.MainViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
@@ -32,7 +33,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var filterBottomSheetBinding: FilterBottomSheetBinding
     private lateinit var filterDialog: BottomSheetDialog
     private var moviesList = listOf<MovieModel>()
-    private lateinit var database: MovieDatabase
 
     enum class SortType {
         Asc, Desc
@@ -54,39 +54,25 @@ class MainActivity : AppCompatActivity() {
 
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
-        database = Room.databaseBuilder(applicationContext, MovieDatabase::class.java, "movieDB").build()
-
         binding.recyclerView.adapter = moviesAdapter
         binding.recyclerView.layoutManager = gridLayoutManager
 
-        viewModel.apiStatus.observe(this) {
+        viewModel.repositoryState.observe(this) {
             when (it) {
-
-                is MainViewModel.ApiStatus.Success -> {
-                    moviesList = it.apiModel.items
+                is DataRepository.RepositoryState.Success -> {
+                    moviesList = it.movies
                     //loadFilteredAndSortedMovies(selectedSortBy, selectedSortType)
                     moviesAdapter.populateData(moviesList)
-                    saveToDatabase(moviesList)
                     binding.progressBar.visibility = View.GONE
                     initSortBottomSheet()
                     initFilterBottomSheet()
                 }
-                is MainViewModel.ApiStatus.Loader -> {
+                is DataRepository.RepositoryState.Loader -> {
                     binding.progressBar.visibility = View.VISIBLE
                 }
                 else -> {}
             }
         }
-        viewModel.fetchMovieList()
-
-        /*binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (!recyclerView.canScrollVertically(1)) {
-                    viewModel.fetchMovieList()
-                }
-            }
-        })*/
 
         binding.sortBtn.setOnClickListener {
             sortDialog.show()
@@ -94,14 +80,6 @@ class MainActivity : AppCompatActivity() {
 
         binding.filterBtn.setOnClickListener {
             filterDialog.show()
-        }
-    }
-
-    private fun saveToDatabase(movieList: List<MovieModel>){
-        GlobalScope.launch {
-            movieList.forEach {
-                database.movieDao().insertMovie(it)
-            }
         }
     }
 
