@@ -9,32 +9,18 @@ import com.demo.androidfundamentals.source.DataRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import kotlin.properties.Delegates
 
-class MainViewModel: ViewModel() {
+class MainViewModel : ViewModel(), KoinComponent {
 
-    private val dataRepository = DataRepository(RetrofitInstance.service)
+    private val dataRepository: DataRepository by inject()
 
-    val apiStatus = MutableLiveData<ApiStatus>()
 
-    fun fetchMovieList(){
-        apiStatus.value = ApiStatus.Loader
+    /*init {
         viewModelScope.launch {
-            val response = withContext(Dispatchers.IO){
-                dataRepository.getMovies()
-            }
-            if(response.isSuccessful) {
-                apiStatus.value = ApiStatus.Success(response.body()!!)
-            } else {
-                apiStatus.value = ApiStatus.Error(response.errorBody().toString())
-            }
-
+            dataRepository.getMovies()
         }
-    }
-
-    sealed class ApiStatus {
-        object Loader : ApiStatus()
-        data class Error(val message: String): ApiStatus()
-        data class Success(val apiModel: APIModel): ApiStatus()
-    }
+    }*/
 }
