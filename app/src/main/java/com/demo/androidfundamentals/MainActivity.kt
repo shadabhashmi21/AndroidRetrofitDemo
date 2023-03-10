@@ -39,11 +39,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     enum class SortBy {
-        Name, ReleaseDate
+        Rating, Name, ReleaseDate
     }
 
     private var selectedSortType = SortType.Asc
-    private var selectedSortBy = SortBy.Name
+    private var selectedSortBy = SortBy.Rating
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
             when (it) {
                 is DataRepository.RepositoryState.Success -> {
                     moviesList = it.movies
-                    //loadFilteredAndSortedMovies(selectedSortBy, selectedSortType)
+                    loadFilteredAndSortedMovies(selectedSortBy, selectedSortType)
                     moviesAdapter.populateData(moviesList)
                     binding.progressBar.visibility = View.GONE
                     initSortBottomSheet()
@@ -108,8 +108,13 @@ class MainActivity : AppCompatActivity() {
         sortBottomSheetBinding = SortBottomSheetBinding.inflate(layoutInflater)
         sortBottomSheetBinding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
             selectedSortBy =
-                if (checkedId == sortBottomSheetBinding.byName.id) SortBy.Name else SortBy.ReleaseDate
-            //loadSortByData(selectedSortBy)
+                when (checkedId) {
+                    sortBottomSheetBinding.byRating.id -> SortBy.Rating
+                    sortBottomSheetBinding.byName.id -> SortBy.Name
+                    else -> SortBy.ReleaseDate
+                }
+
+            loadSortByData(selectedSortBy)
             sortDialog.dismiss()
         }
 
@@ -120,10 +125,16 @@ class MainActivity : AppCompatActivity() {
         }
 
         // load default data
-        if (selectedSortBy == SortBy.Name) {
-            sortBottomSheetBinding.byName.isChecked = true
-        } else {
-            sortBottomSheetBinding.byReleaseDate.isChecked = true
+        when (selectedSortBy) {
+            SortBy.Rating -> {
+                sortBottomSheetBinding.byRating.isChecked = true
+            }
+            SortBy.Name -> {
+                sortBottomSheetBinding.byName.isChecked = true
+            }
+            else -> {
+                sortBottomSheetBinding.byReleaseDate.isChecked = true
+            }
         }
         loadSortTypeData(selectedSortType)
         //
@@ -151,7 +162,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             sortBottomSheetBinding.toggleButton.setImageResource(R.drawable.ic_baseline_arrow_downward_24)
         }
-        //loadFilteredAndSortedMovies(selectedSortBy, selectedSortType)
+        loadFilteredAndSortedMovies(selectedSortBy, selectedSortType)
     }
 
     private fun createTagChip(context: Context, chipName: String): Chip {

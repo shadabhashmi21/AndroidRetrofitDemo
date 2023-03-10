@@ -3,6 +3,7 @@
     <string name="filter">Filter</string>
     <string name="sort">Sort</string>
     <string name="apply">Apply</string>
+    <string name="by_rating">By Rating</string>
     <string name="by_release_date">By Release Date</string>
     <string name="by_name">By Name</string>
 </resources>
