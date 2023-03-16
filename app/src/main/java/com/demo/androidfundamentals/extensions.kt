@@ -2,10 +2,11 @@ package com.demo.androidfundamentals
 
 import android.util.Log
 import com.demo.androidfundamentals.models.MovieModel
+import com.demo.androidfundamentals.viewmodel.MainViewModel
 
 fun List<MovieModel>.applyFilterAndSort(
-    sortBy: MainActivity.SortBy,
-    sortType: MainActivity.SortType,
+    sortBy: MainViewModel.SortBy,
+    sortType: MainViewModel.SortType,
     filteredList: List<String> = mutableListOf()
 ): List<MovieModel> {
     val filteredAndSortedMovieList = if (filteredList.isNotEmpty()) {
@@ -16,8 +17,8 @@ fun List<MovieModel>.applyFilterAndSort(
 
     Log.d("filteredAndSortedMovieList", filteredAndSortedMovieList.size.toString())
 
-    if (sortBy == MainActivity.SortBy.Name) {
-        if (sortType == MainActivity.SortType.Asc) {
+    if (sortBy == MainViewModel.SortBy.title) {
+        if (sortType == MainViewModel.SortType.ASC) {
             filteredAndSortedMovieList.sortBy {
                 it.title
             }
@@ -26,8 +27,8 @@ fun List<MovieModel>.applyFilterAndSort(
                 it.title
             }
         }
-    } else if (sortBy == MainActivity.SortBy.ReleaseDate) {
-        if (sortType == MainActivity.SortType.Asc) {
+    } else if (sortBy == MainViewModel.SortBy.year) {
+        if (sortType == MainViewModel.SortType.ASC) {
             filteredAndSortedMovieList.sortBy {
                 it.year
             }

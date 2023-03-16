@@ -16,10 +16,10 @@ class DataRepository : KoinComponent {
     private val moviesAPI = RetrofitInstance.service
     val repositoryState = MutableLiveData<RepositoryState>()
 
-    suspend fun populateData() {
+    suspend fun populateData(sortType: String, sortBy: String) {
         repositoryState.value = RepositoryState.Loader
         val dataInDB = withContext(Dispatchers.IO){
-            movieDao.getMovies()
+            movieDao.getMovies(sortBy)
         }
         if (dataInDB.isNotEmpty()) {
             repositoryState.value = RepositoryState.Success(dataInDB)

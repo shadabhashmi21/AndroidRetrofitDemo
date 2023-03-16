@@ -12,10 +12,21 @@ class MainViewModel : ViewModel(), KoinComponent {
     private val dataRepository: DataRepository by inject()
     val repositoryState: LiveData<DataRepository.RepositoryState> = dataRepository.repositoryState
 
+    enum class SortType {
+        ASC, DESC
+    }
+
+    enum class SortBy {
+        imDbRating, title, year
+    }
+
+    var selectedSortType = SortType.ASC
+    var selectedSortBy = SortBy.imDbRating
+
 
     init {
         viewModelScope.launch {
-            dataRepository.populateData()
+            dataRepository.populateData(sortType = selectedSortType.toString(), sortBy = selectedSortBy.toString())
         }
     }
 }
