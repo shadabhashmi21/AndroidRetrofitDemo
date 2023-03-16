@@ -2,8 +2,10 @@ package com.demo.androidfundamentals.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.demo.androidfundamentals.MainActivity
+import androidx.sqlite.db.SimpleSQLiteQuery
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.demo.androidfundamentals.models.MovieModel
+
 
 @Dao
 interface MovieDao {
@@ -17,6 +19,10 @@ interface MovieDao {
     @Delete
     suspend fun deleteMovie(movie: MovieModel)
 
-    @Query("SELECT * FROM movies ORDER BY (:sortBy) ASC")
-    fun getMovies(sortBy: String): List<MovieModel>
+    @RawQuery
+    fun getMovies(query: SupportSQLiteQuery): List<MovieModel>
+
+    fun getMovies(sortBy: String, sortType: String): List<MovieModel> = getMovies(
+        SimpleSQLiteQuery("SELECT * FROM movies ORDER BY $sortBy $sortType")
+    )
 }

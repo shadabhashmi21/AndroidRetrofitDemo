@@ -19,7 +19,7 @@ class DataRepository : KoinComponent {
     suspend fun populateData(sortType: String, sortBy: String) {
         repositoryState.value = RepositoryState.Loader
         val dataInDB = withContext(Dispatchers.IO){
-            movieDao.getMovies(sortBy)
+            movieDao.getMovies(sortBy, sortType)
         }
         if (dataInDB.isNotEmpty()) {
             repositoryState.value = RepositoryState.Success(dataInDB)

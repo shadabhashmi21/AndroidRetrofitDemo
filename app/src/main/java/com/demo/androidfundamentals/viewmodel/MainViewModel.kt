@@ -20,8 +20,8 @@ class MainViewModel : ViewModel(), KoinComponent {
         imDbRating, title, year
     }
 
-    var selectedSortType = SortType.ASC
-    var selectedSortBy = SortBy.imDbRating
+    var selectedSortType = SortType.DESC
+    var selectedSortBy = SortBy.title
 
 
     init {
