@@ -1,6 +1,5 @@
 package com.demo.androidfundamentals.source
 
-import androidx.lifecycle.MutableLiveData
 import com.demo.androidfundamentals.database.MovieDao
 import com.demo.androidfundamentals.models.MovieModel
 import com.demo.androidfundamentals.retrofit.RetrofitInstance
@@ -14,37 +13,35 @@ class DataRepository : KoinComponent {
     private val movieDao: MovieDao by inject()
 
     private val moviesAPI = RetrofitInstance.service
-    val repositoryState = MutableLiveData<RepositoryState>()
 
-    suspend fun populateData(sortType: String, sortBy: String) {
-        repositoryState.value = RepositoryState.Loader
-        val dataInDB = withContext(Dispatchers.IO){
+    suspend fun populateData(sortType: String, sortBy: String): Data {
+        val dataInDB = withContext(Dispatchers.IO) {
             movieDao.getMovies(sortBy, sortType)
         }
         if (dataInDB.isNotEmpty()) {
-            repositoryState.value = RepositoryState.Success(dataInDB)
+            return Data.Success(dataInDB)
         } else {
-            fetchDatFromWeb()
+            // return fetchDatFromWeb()
+            return Data.Error("api data not found")
         }
     }
 
-    private suspend fun fetchDatFromWeb() {
-        repositoryState.value = RepositoryState.Loader
+/*    private suspend fun fetchDatFromWeb(): Data {
         val response = withContext(Dispatchers.IO) {
             moviesAPI.getMovies()
         }
         if (response.isSuccessful) {
-            repositoryState.value = RepositoryState.Success(response.body()?.items!!)
+            data.value = Data.Success(response.body()?.items!!)
             movieDao.insertMovie(response.body()?.items!!)
         } else {
-            repositoryState.value = RepositoryState.Error(response.errorBody().toString())
+            data.value = Data.Error(response.errorBody().toString())
         }
 
-    }
+    }*/
+}
 
-    sealed class RepositoryState {
-        object Loader : RepositoryState()
-        data class Error(val message: String) : RepositoryState()
-        data class Success(val movies: List<MovieModel>) : RepositoryState()
-    }
+sealed class Data {
+    object Loader : Data()
+    data class Error(val message: String) : Data()
+    data class Success(val movies: List<MovieModel>) : Data()
 }

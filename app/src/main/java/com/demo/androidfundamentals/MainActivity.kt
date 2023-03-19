@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -13,7 +12,7 @@ import com.demo.androidfundamentals.databinding.ActivityMainBinding
 import com.demo.androidfundamentals.databinding.FilterBottomSheetBinding
 import com.demo.androidfundamentals.databinding.SortBottomSheetBinding
 import com.demo.androidfundamentals.models.MovieModel
-import com.demo.androidfundamentals.source.DataRepository
+import com.demo.androidfundamentals.source.Data
 import com.demo.androidfundamentals.viewmodel.MainViewModel
 import com.demo.androidfundamentals.viewmodel.SortBy
 import com.demo.androidfundamentals.viewmodel.SortType
@@ -44,9 +43,9 @@ class MainActivity : AppCompatActivity() {
         binding.recyclerView.adapter = moviesAdapter
         binding.recyclerView.layoutManager = gridLayoutManager
 
-        viewModel.repositoryState.observe(this) {
+        viewModel.data.observe(this) {
             when (it) {
-                is DataRepository.RepositoryState.Success -> {
+                is Data.Success -> {
                     moviesList = it.movies
                     loadFilteredAndSortedMovies(
                         viewModel.selectedSortBy,
@@ -57,7 +56,7 @@ class MainActivity : AppCompatActivity() {
                     initSortBottomSheet()
                     initFilterBottomSheet()
                 }
-                is DataRepository.RepositoryState.Loader -> {
+                is Data.Loader -> {
                     binding.progressBar.visibility = View.VISIBLE
                 }
                 else -> {}
@@ -108,30 +107,23 @@ class MainActivity : AppCompatActivity() {
                     else -> SortBy.year
                 }
 
-            viewModel.loadSortByData()
+            viewModel.populateData()
             sortDialog.dismiss()
         }
 
         sortBottomSheetBinding.toggleButton.setOnClickListener {
-            viewModel.selectedSortType =
-                if (viewModel.selectedSortType == SortType.ASC) SortType.DESC else SortType.ASC
-            loadSortTypeData(viewModel.selectedSortType)
+            viewModel.selectedSortType = if (viewModel.selectedSortType == SortType.ASC) SortType.DESC else SortType.ASC
+            loadSortTypeData()
             sortDialog.dismiss()
         }
 
         // load default data
         when (viewModel.selectedSortBy) {
-            SortBy.imDbRating -> {
-                sortBottomSheetBinding.byRating.isChecked = true
-            }
-            SortBy.title -> {
-                sortBottomSheetBinding.byName.isChecked = true
-            }
-            else -> {
-                sortBottomSheetBinding.byReleaseDate.isChecked = true
-            }
+            SortBy.imDbRating -> sortBottomSheetBinding.byRating.isChecked = true
+            SortBy.title -> sortBottomSheetBinding.byName.isChecked = true
+            else -> sortBottomSheetBinding.byReleaseDate.isChecked = true
         }
-        loadSortTypeData(viewModel.selectedSortType)
+        loadSortTypeData()
 
         sortDialog.setContentView(sortBottomSheetBinding.root)
     }
@@ -145,13 +137,12 @@ class MainActivity : AppCompatActivity() {
         moviesAdapter.populateData(filteredAndSortedMovies)
     }
 
-    private fun loadSortTypeData(sortType: SortType) {
-        if (sortType == SortType.ASC) {
+    private fun loadSortTypeData() {
+        if (viewModel.selectedSortType == SortType.ASC) {
             sortBottomSheetBinding.toggleButton.setImageResource(R.drawable.ic_baseline_arrow_upward_24)
         } else {
             sortBottomSheetBinding.toggleButton.setImageResource(R.drawable.ic_baseline_arrow_downward_24)
         }
-
         loadFilteredAndSortedMovies(viewModel.selectedSortBy, viewModel.selectedSortType)
     }
 
