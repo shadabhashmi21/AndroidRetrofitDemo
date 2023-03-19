@@ -11,7 +11,6 @@ import com.demo.androidfundamentals.adapter.MoviesAdapter
 import com.demo.androidfundamentals.databinding.ActivityMainBinding
 import com.demo.androidfundamentals.databinding.FilterBottomSheetBinding
 import com.demo.androidfundamentals.databinding.SortBottomSheetBinding
-import com.demo.androidfundamentals.models.MovieModel
 import com.demo.androidfundamentals.source.Data
 import com.demo.androidfundamentals.viewmodel.MainViewModel
 import com.demo.androidfundamentals.viewmodel.SortBy
@@ -29,7 +28,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sortDialog: BottomSheetDialog
     private lateinit var filterBottomSheetBinding: FilterBottomSheetBinding
     private lateinit var filterDialog: BottomSheetDialog
-    private var moviesList = listOf<MovieModel>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,17 +41,13 @@ class MainActivity : AppCompatActivity() {
         binding.recyclerView.adapter = moviesAdapter
         binding.recyclerView.layoutManager = gridLayoutManager
 
+        initSortBottomSheet()
+
         viewModel.data.observe(this) {
             when (it) {
                 is Data.Success -> {
-                    moviesList = it.movies
-                    loadFilteredAndSortedMovies(
-                        viewModel.selectedSortBy,
-                        viewModel.selectedSortType
-                    )
-                    moviesAdapter.populateData(moviesList)
+                    moviesAdapter.populateData(it.movies)
                     binding.progressBar.visibility = View.GONE
-                    initSortBottomSheet()
                     initFilterBottomSheet()
                 }
                 is Data.Loader -> {
@@ -78,21 +72,16 @@ class MainActivity : AppCompatActivity() {
         filterDialog.setContentView(filterBottomSheetBinding.root)
         val chipGroup = filterBottomSheetBinding.chipGroup
 
-        moviesList.getDistinctMovieYears().forEach {
+        viewModel.availableYears.forEach {
             chipGroup.addView(createTagChip(this, it))
         }
 
         filterBottomSheetBinding.applyButton.setOnClickListener {
-            val filterList = chipGroup.checkedChipIds.map { id ->
+            viewModel.filterYears = chipGroup.checkedChipIds.map { id ->
                 chipGroup.findViewById<Chip>(id).text.toString()
-            }
-            loadFilteredAndSortedMovies(
-                viewModel.selectedSortBy,
-                viewModel.selectedSortType,
-                filterList
-            )
+            } as MutableList<String>
+            viewModel.populateData()
             filterDialog.dismiss()
-            Log.d("filterList", filterList.toString())
         }
     }
 
@@ -113,7 +102,8 @@ class MainActivity : AppCompatActivity() {
 
         sortBottomSheetBinding.toggleButton.setOnClickListener {
             viewModel.selectedSortType = if (viewModel.selectedSortType == SortType.ASC) SortType.DESC else SortType.ASC
-            loadSortTypeData()
+            toggleSortIcon()
+            viewModel.populateData()
             sortDialog.dismiss()
         }
 
@@ -123,27 +113,16 @@ class MainActivity : AppCompatActivity() {
             SortBy.title -> sortBottomSheetBinding.byName.isChecked = true
             else -> sortBottomSheetBinding.byReleaseDate.isChecked = true
         }
-        loadSortTypeData()
 
         sortDialog.setContentView(sortBottomSheetBinding.root)
     }
 
-    private fun loadFilteredAndSortedMovies(
-        sortBy: SortBy,
-        sortType: SortType,
-        filteredList: List<String> = mutableListOf()
-    ) {
-        val filteredAndSortedMovies = moviesList.applyFilterAndSort(sortBy, sortType, filteredList)
-        moviesAdapter.populateData(filteredAndSortedMovies)
-    }
-
-    private fun loadSortTypeData() {
+    private fun toggleSortIcon() {
         if (viewModel.selectedSortType == SortType.ASC) {
             sortBottomSheetBinding.toggleButton.setImageResource(R.drawable.ic_baseline_arrow_upward_24)
         } else {
             sortBottomSheetBinding.toggleButton.setImageResource(R.drawable.ic_baseline_arrow_downward_24)
         }
-        loadFilteredAndSortedMovies(viewModel.selectedSortBy, viewModel.selectedSortType)
     }
 
     private fun createTagChip(context: Context, chipName: String): Chip {

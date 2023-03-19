@@ -14,9 +14,9 @@ class DataRepository : KoinComponent {
 
     private val moviesAPI = RetrofitInstance.service
 
-    suspend fun populateData(sortType: String, sortBy: String): Data {
+    suspend fun populateData(sortType: String, sortBy: String, filterYears: List<String>): Data {
         val dataInDB = withContext(Dispatchers.IO) {
-            movieDao.getMovies(sortBy, sortType)
+            movieDao.getMovies(sortBy, sortType, filterYears)
         }
         if (dataInDB.isNotEmpty()) {
             return Data.Success(dataInDB)
