@@ -15,6 +15,7 @@ import com.demo.androidfundamentals.databinding.SortBottomSheetBinding
 import com.demo.androidfundamentals.models.MovieModel
 import com.demo.androidfundamentals.source.DataRepository
 import com.demo.androidfundamentals.viewmodel.MainViewModel
+import com.demo.androidfundamentals.viewmodel.SortBy
 import com.demo.androidfundamentals.viewmodel.SortType
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
@@ -47,7 +48,10 @@ class MainActivity : AppCompatActivity() {
             when (it) {
                 is DataRepository.RepositoryState.Success -> {
                     moviesList = it.movies
-                    //loadFilteredAndSortedMovies(selectedSortBy, selectedSortType)
+                    loadFilteredAndSortedMovies(
+                        viewModel.selectedSortBy,
+                        viewModel.selectedSortType
+                    )
                     moviesAdapter.populateData(moviesList)
                     binding.progressBar.visibility = View.GONE
                     initSortBottomSheet()
@@ -83,7 +87,11 @@ class MainActivity : AppCompatActivity() {
             val filterList = chipGroup.checkedChipIds.map { id ->
                 chipGroup.findViewById<Chip>(id).text.toString()
             }
-            //loadFilteredAndSortedMovies(viewModel.selectedSortBy, viewModel.selectedSortType, filterList)
+            loadFilteredAndSortedMovies(
+                viewModel.selectedSortBy,
+                viewModel.selectedSortType,
+                filterList
+            )
             filterDialog.dismiss()
             Log.d("filterList", filterList.toString())
         }
@@ -93,63 +101,59 @@ class MainActivity : AppCompatActivity() {
         sortDialog = BottomSheetDialog(this)
         sortBottomSheetBinding = SortBottomSheetBinding.inflate(layoutInflater)
         sortBottomSheetBinding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
-          /*  viewModel.selectedSortBy =
+            viewModel.selectedSortBy =
                 when (checkedId) {
-                    sortBottomSheetBinding.byRating.id -> MainViewModel.SortBy.Rating
-                    sortBottomSheetBinding.byName.id -> MainViewModel.SortBy.Name
-                    else -> MainViewModel.SortBy.ReleaseDate
-                }*/
+                    sortBottomSheetBinding.byRating.id -> SortBy.imDbRating
+                    sortBottomSheetBinding.byName.id -> SortBy.title
+                    else -> SortBy.year
+                }
 
-            //loadSortByData(viewModel.selectedSortBy)
-            //sortDialog.dismiss()
+            viewModel.loadSortByData()
+            sortDialog.dismiss()
         }
 
         sortBottomSheetBinding.toggleButton.setOnClickListener {
-            viewModel.selectedSortType = if (viewModel.selectedSortType == SortType.ASC) SortType.DESC else SortType.ASC
-            //loadSortTypeData(viewModel.selectedSortType)
+            viewModel.selectedSortType =
+                if (viewModel.selectedSortType == SortType.ASC) SortType.DESC else SortType.ASC
+            loadSortTypeData(viewModel.selectedSortType)
             sortDialog.dismiss()
         }
 
         // load default data
-       /* when (viewModel.selectedSortBy) {
-            MainViewModel.SortBy.Rating -> {
+        when (viewModel.selectedSortBy) {
+            SortBy.imDbRating -> {
                 sortBottomSheetBinding.byRating.isChecked = true
             }
-            MainViewModel.SortBy.Name -> {
+            SortBy.title -> {
                 sortBottomSheetBinding.byName.isChecked = true
             }
             else -> {
                 sortBottomSheetBinding.byReleaseDate.isChecked = true
             }
-        }*/
-        //loadSortTypeData(viewModel.selectedSortType)
-        //
+        }
+        loadSortTypeData(viewModel.selectedSortType)
 
         sortDialog.setContentView(sortBottomSheetBinding.root)
     }
 
-    /*private fun loadFilteredAndSortedMovies(sortBy: SortBy, sortType: SortType, filteredList: List<String> = mutableListOf()) {
+    private fun loadFilteredAndSortedMovies(
+        sortBy: SortBy,
+        sortType: SortType,
+        filteredList: List<String> = mutableListOf()
+    ) {
         val filteredAndSortedMovies = moviesList.applyFilterAndSort(sortBy, sortType, filteredList)
         moviesAdapter.populateData(filteredAndSortedMovies)
-    }*/
+    }
 
-    /*private fun loadSortByData(sortBy: SortBy) {
-        if (sortBy == SortBy.Name) {
-            Toast.makeText(this, "By name clicked", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(this, "By release date clicked", Toast.LENGTH_SHORT).show()
-        }
-        loadFilteredAndSortedMovies(selectedSortBy, selectedSortType)
-    }*/
-
-    /*private fun loadSortTypeData(sortType: SortType) {
+    private fun loadSortTypeData(sortType: SortType) {
         if (sortType == SortType.ASC) {
             sortBottomSheetBinding.toggleButton.setImageResource(R.drawable.ic_baseline_arrow_upward_24)
         } else {
             sortBottomSheetBinding.toggleButton.setImageResource(R.drawable.ic_baseline_arrow_downward_24)
         }
-        loadFilteredAndSortedMovies(selectedSortBy, selectedSortType)
-    }*/
+
+        loadFilteredAndSortedMovies(viewModel.selectedSortBy, viewModel.selectedSortType)
+    }
 
     private fun createTagChip(context: Context, chipName: String): Chip {
         return Chip(context).apply {

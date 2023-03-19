@@ -1,5 +1,6 @@
 package com.demo.androidfundamentals.viewmodel
 
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,6 +20,12 @@ class MainViewModel : ViewModel(), KoinComponent {
     init {
         viewModelScope.launch {
             dataRepository.populateData(sortType = selectedSortType.toString(), sortBy = selectedSortBy.toString())
+        }
+    }
+
+    fun loadSortByData() {
+        viewModelScope.launch {
+            dataRepository.populateData(selectedSortType.toString(), selectedSortBy.toString())
         }
     }
 }

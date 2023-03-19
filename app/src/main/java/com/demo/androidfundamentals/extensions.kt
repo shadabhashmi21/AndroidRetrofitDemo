@@ -19,7 +19,7 @@ fun List<MovieModel>.applyFilterAndSort(
 
     Log.d("filteredAndSortedMovieList", filteredAndSortedMovieList.size.toString())
 
-    if (sortBy == SortBy.title) {
+    /*if (sortBy == SortBy.title) {
         if (sortType == SortType.ASC) {
             filteredAndSortedMovieList.sortBy {
                 it.title
@@ -39,7 +39,7 @@ fun List<MovieModel>.applyFilterAndSort(
                 it.year
             }
         }
-    }
+    }*/
 
     return filteredAndSortedMovieList
 }
