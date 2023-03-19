@@ -15,6 +15,7 @@ import com.demo.androidfundamentals.databinding.SortBottomSheetBinding
 import com.demo.androidfundamentals.models.MovieModel
 import com.demo.androidfundamentals.source.DataRepository
 import com.demo.androidfundamentals.viewmodel.MainViewModel
+import com.demo.androidfundamentals.viewmodel.SortType
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
 
@@ -104,7 +105,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         sortBottomSheetBinding.toggleButton.setOnClickListener {
-            viewModel.selectedSortType = if (viewModel.selectedSortType == MainViewModel.SortType.ASC) MainViewModel.SortType.DESC else MainViewModel.SortType.ASC
+            viewModel.selectedSortType = if (viewModel.selectedSortType == SortType.ASC) SortType.DESC else SortType.ASC
             //loadSortTypeData(viewModel.selectedSortType)
             sortDialog.dismiss()
         }
