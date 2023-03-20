@@ -2,7 +2,6 @@ package com.demo.androidfundamentals
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -11,7 +10,7 @@ import com.demo.androidfundamentals.adapter.MoviesAdapter
 import com.demo.androidfundamentals.databinding.ActivityMainBinding
 import com.demo.androidfundamentals.databinding.FilterBottomSheetBinding
 import com.demo.androidfundamentals.databinding.SortBottomSheetBinding
-import com.demo.androidfundamentals.source.Data
+import com.demo.androidfundamentals.core.Status
 import com.demo.androidfundamentals.viewmodel.MainViewModel
 import com.demo.androidfundamentals.viewmodel.SortBy
 import com.demo.androidfundamentals.viewmodel.SortType
@@ -43,14 +42,14 @@ class MainActivity : AppCompatActivity() {
 
         initSortBottomSheet()
 
-        viewModel.data.observe(this) {
+        viewModel.status.observe(this) {
             when (it) {
-                is Data.Success -> {
+                is Status.Success -> {
                     moviesAdapter.populateData(it.movies)
                     binding.progressBar.visibility = View.GONE
                     initFilterBottomSheet()
                 }
-                is Data.Loader -> {
+                is Status.Loader -> {
                     binding.progressBar.visibility = View.VISIBLE
                 }
                 else -> {}

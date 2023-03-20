@@ -1,5 +1,6 @@
 package com.demo.androidfundamentals.source
 
+import com.demo.androidfundamentals.core.Status
 import com.demo.androidfundamentals.database.MovieDao
 import com.demo.androidfundamentals.models.MovieModel
 import com.demo.androidfundamentals.retrofit.RetrofitInstance
@@ -14,15 +15,15 @@ class DataRepository : KoinComponent {
 
     private val moviesAPI = RetrofitInstance.service
 
-    suspend fun populateData(sortType: String, sortBy: String, filterYears: List<String>): Data {
+    suspend fun populateData(sortType: String, sortBy: String, filterYears: List<String>): Status {
         val dataInDB = withContext(Dispatchers.IO) {
             movieDao.getMovies(sortBy, sortType, filterYears)
         }
-        if (dataInDB.isNotEmpty()) {
-            return Data.Success(dataInDB)
+        return if (dataInDB.isNotEmpty()) {
+            Status.Success(dataInDB)
         } else {
             // return fetchDatFromWeb()
-            return Data.Error("api data not found")
+            Status.Error("api data not found")
         }
     }
 
@@ -38,10 +39,4 @@ class DataRepository : KoinComponent {
         }
 
     }*/
-}
-
-sealed class Data {
-    object Loader : Data()
-    data class Error(val message: String) : Data()
-    data class Success(val movies: List<MovieModel>) : Data()
 }

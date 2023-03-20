@@ -1,12 +1,10 @@
 package com.demo.androidfundamentals.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.demo.androidfundamentals.core.Status
 import com.demo.androidfundamentals.getDistinctMovieYears
-import com.demo.androidfundamentals.models.MovieModel
-import com.demo.androidfundamentals.source.Data
 import com.demo.androidfundamentals.source.DataRepository
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -14,7 +12,7 @@ import org.koin.core.component.inject
 
 class MainViewModel : ViewModel(), KoinComponent {
     private val dataRepository: DataRepository by inject()
-    val data = MutableLiveData<Data>()
+    val status = MutableLiveData<Status>()
 
     var selectedSortType = SortType.DESC
     var selectedSortBy = SortBy.imDbRating
@@ -27,13 +25,13 @@ class MainViewModel : ViewModel(), KoinComponent {
     }
 
     fun populateData() {
-        data.value = Data.Loader
+        status.value = Status.Loader
         viewModelScope.launch {
             val data = dataRepository.populateData(sortType = selectedSortType.toString(), sortBy = selectedSortBy.toString(), filterYears)
-            if(data is Data.Success && filterYears.isEmpty()) {
+            if(data is Status.Success && filterYears.isEmpty()) {
                 availableYears = data.movies.getDistinctMovieYears() as MutableList<String>
             }
-            this@MainViewModel.data.value = data
+            this@MainViewModel.status.value = data
         }
     }
 }

@@ -33,7 +33,7 @@
             android:id="@+id/by_rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/by_release_date" />
+            android:text="@string/by_rating" />
 
         <RadioButton
             android:id="@+id/by_name"
