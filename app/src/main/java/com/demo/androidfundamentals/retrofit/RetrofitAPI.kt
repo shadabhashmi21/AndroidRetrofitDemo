@@ -1,12 +1,10 @@
 package com.demo.androidfundamentals.retrofit
 
-import com.demo.androidfundamentals.api.MoviesAPI
 import com.demo.androidfundamentals.core.Resource
-import com.demo.androidfundamentals.models.APIModel
-import retrofit2.Response
+import com.demo.androidfundamentals.models.MovieModel
 import retrofit2.http.GET
 
-interface RetrofitAPI : MoviesAPI {
+interface RetrofitAPI {
     @GET("Top250Movies/k_2szq15qf")
-    override suspend fun getMovies(): Response<APIModel>
+    suspend fun getMovies(): Resource<List<MovieModel>>
 }

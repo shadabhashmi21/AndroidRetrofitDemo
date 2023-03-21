@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.demo.androidfundamentals.adapter.MoviesAdapter
@@ -42,14 +43,14 @@ class MainActivity : AppCompatActivity() {
 
         initSortBottomSheet()
 
-        viewModel.status.observe(this) {
-            when (it) {
-                is Status.Success -> {
-                    moviesAdapter.populateData(it.movies)
+        viewModel.data.observe(this) {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    moviesAdapter.populateData(it.data!!)
                     binding.progressBar.visibility = View.GONE
                     initFilterBottomSheet()
                 }
-                is Status.Loader -> {
+                Status.LOADING -> {
                     binding.progressBar.visibility = View.VISIBLE
                 }
                 else -> {}
