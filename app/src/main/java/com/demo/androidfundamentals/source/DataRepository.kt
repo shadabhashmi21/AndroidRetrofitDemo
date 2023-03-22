@@ -38,11 +38,11 @@ class DataRepository : KoinComponent {
     }
 
     private suspend fun fetchLocalData(
-        sortType: String,
         sortBy: String,
+        sortType: String,
         filterYears: List<String>
     ) = withContext(Dispatchers.IO) {
-        movieDao.getMovies(sortBy, sortType, filterYears)
+        movieDao.getMovies(sortBy = sortBy, sortType = sortType, filterYears = filterYears)
     }
 
     private suspend fun syncDataFromWeb() {
