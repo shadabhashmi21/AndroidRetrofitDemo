@@ -53,7 +53,13 @@ class MainActivity : AppCompatActivity() {
                 Status.LOADING -> {
                     binding.progressBar.visibility = View.VISIBLE
                 }
-                else -> {}
+                else -> {
+                    binding.progressBar.visibility = View.GONE
+                    binding.retryBtn.visibility = View.VISIBLE
+                    binding.retryBtn.setOnClickListener {
+                        viewModel.populateData()
+                    }
+                }
             }
         }
 

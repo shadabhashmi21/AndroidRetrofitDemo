@@ -6,4 +6,5 @@
     <string name="by_rating">By Rating</string>
     <string name="by_release_date">By Release Date</string>
     <string name="by_name">By Name</string>
+    <string name="retry">Retry</string>
 </resources>
