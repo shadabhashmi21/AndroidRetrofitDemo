@@ -19,11 +19,12 @@ class DataRepository : KoinComponent {
     suspend fun populateData(
         sortType: String,
         sortBy: String,
-        filterYears: List<String>
+        filterYears: List<String>,
+        fetchFromWeb: Boolean = false
     ): Resource<List<MovieModel>> {
         var dataInDB = fetchLocalData(sortBy, sortType, filterYears)
         try {
-            if (dataInDB.isEmpty()) {
+            if (dataInDB.isEmpty() || fetchFromWeb) {
                 syncDataFromWeb()
                 dataInDB = fetchLocalData(sortBy, sortType, filterYears)
                 if (dataInDB.isEmpty()) {

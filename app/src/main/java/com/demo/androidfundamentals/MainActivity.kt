@@ -3,6 +3,7 @@ package com.demo.androidfundamentals
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -70,6 +71,13 @@ class MainActivity : AppCompatActivity() {
         binding.filterBtn.setOnClickListener {
             filterDialog.show()
         }
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.populateData(true)
+
+            binding.swipeRefreshLayout.isRefreshing = false
+            Toast.makeText(applicationContext, "Page Refreshed", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun initFilterBottomSheet() {
@@ -107,7 +115,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         sortBottomSheetBinding.toggleButton.setOnClickListener {
-            viewModel.selectedSortType = if (viewModel.selectedSortType == SortType.ASC) SortType.DESC else SortType.ASC
+            viewModel.selectedSortType =
+                if (viewModel.selectedSortType == SortType.ASC) SortType.DESC else SortType.ASC
             toggleSortIcon()
             viewModel.populateData()
             sortDialog.dismiss()

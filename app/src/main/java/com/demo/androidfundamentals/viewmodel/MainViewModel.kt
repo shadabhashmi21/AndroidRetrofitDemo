@@ -26,11 +26,22 @@ class MainViewModel : ViewModel(), KoinComponent {
         populateData()
     }
 
-    fun populateData() {
+    fun populateData(isPageRefreshed: Boolean = false) {
         data.value = Resource.loading()
         viewModelScope.launch {
-            val data = dataRepository.populateData(sortType = selectedSortType.toString(), sortBy = selectedSortBy.toString(), filterYears)
-            if(data.status == Status.SUCCESS && filterYears.isEmpty()) {
+            val data = if (isPageRefreshed) dataRepository.populateData(
+                SortType.DESC.toString(),
+                SortBy.imDbRating.toString(),
+                emptyList(),
+                true
+            )
+            else
+                dataRepository.populateData(
+                    sortType = selectedSortType.toString(),
+                    sortBy = selectedSortBy.toString(),
+                    filterYears
+                )
+            if (data.status == Status.SUCCESS && filterYears.isEmpty()) {
                 availableYears = data.data?.getDistinctMovieYears() as MutableList<String>
             }
             this@MainViewModel.data.value = data
