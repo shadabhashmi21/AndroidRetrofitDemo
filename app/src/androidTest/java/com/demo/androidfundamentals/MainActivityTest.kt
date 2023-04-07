@@ -28,7 +28,7 @@ class MainActivityTest {
     fun testFilterFlow() {
         // check data/list is visible
         onView(withId(R.id.recycler_view)).check(withItemCount(greaterThan(1)))
-        val initialItemsCount = getCountFromRecyclerView(R.id.recycler_view)
+        val initialItemsCount = getCountFromView(R.id.recycler_view)
         // check filter button is visible
         // do click on filter button
         onView(withId(R.id.filter_btn)).perform(click())
@@ -38,12 +38,12 @@ class MainActivityTest {
         // check years chips are visible
         onView(withId(R.id.chip_group)).check(withItemCount(greaterThan(1)))
         // select a random year (or 1st)
-        // todo - find a way to select any chip randomly like position
-        onView(nthChildOf(withId(R.id.chip_group), 0)).perform(click())
+        val chipCount = getCountFromView(R.id.chip_group)
+        onView(nthChildOf(withId(R.id.chip_group), (0 until chipCount).random())).perform(click())
         // do click apply button
         onView(withId(R.id.apply_button)).perform(click())
         // check if the movie list is updated
-        val filteredItemsCount = getCountFromRecyclerView(R.id.recycler_view)
+        val filteredItemsCount = getCountFromView(R.id.recycler_view)
         assertNotEquals(initialItemsCount, filteredItemsCount)
 
     }
@@ -52,22 +52,5 @@ class MainActivityTest {
     fun testSortButton() {
         onView(withId(R.id.sort_btn)).perform(click())
         onView(withId(R.id.by_name)).perform(click())
-    }
-}
-
-fun nthChildOf(parentMatcher: Matcher<View?>, childPosition: Int): Matcher<View?>? {
-    return object : TypeSafeMatcher<View>() {
-        override fun describeTo(description: Description) {
-            description.appendText("position $childPosition of parent ")
-            parentMatcher.describeTo(description)
-        }
-
-        override fun matchesSafely(view: View): Boolean {
-            if (view.parent !is ViewGroup) return false
-            val parent = view.parent as ViewGroup
-            return parentMatcher.matches(parent) && parent.childCount > childPosition && parent.getChildAt(
-                childPosition
-            ).equals(view)
-        }
     }
 }
