@@ -1,8 +1,7 @@
 package com.demo.androidfundamentals
 
 import android.view.View
-import androidx.annotation.IdRes
-import androidx.recyclerview.widget.RecyclerView
+import android.view.ViewGroup
 import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -11,6 +10,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.demo.androidfundamentals.ViewGroupItemCountAssertion.Companion.withItemCount
 import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.hamcrest.Matchers.*
 import org.hamcrest.TypeSafeMatcher
 import org.junit.Assert.*
@@ -39,7 +39,7 @@ class MainActivityTest {
         onView(withId(R.id.chip_group)).check(withItemCount(greaterThan(1)))
         // select a random year (or 1st)
         // todo - find a way to select any chip randomly like position
-        onView(withId(88)).check(matches(withText("1972"))).perform(click())
+        onView(nthChildOf(withId(R.id.chip_group), 0)).perform(click())
         // do click apply button
         onView(withId(R.id.apply_button)).perform(click())
         // check if the movie list is updated
@@ -52,5 +52,22 @@ class MainActivityTest {
     fun testSortButton() {
         onView(withId(R.id.sort_btn)).perform(click())
         onView(withId(R.id.by_name)).perform(click())
+    }
+}
+
+fun nthChildOf(parentMatcher: Matcher<View?>, childPosition: Int): Matcher<View?>? {
+    return object : TypeSafeMatcher<View>() {
+        override fun describeTo(description: Description) {
+            description.appendText("position $childPosition of parent ")
+            parentMatcher.describeTo(description)
+        }
+
+        override fun matchesSafely(view: View): Boolean {
+            if (view.parent !is ViewGroup) return false
+            val parent = view.parent as ViewGroup
+            return parentMatcher.matches(parent) && parent.childCount > childPosition && parent.getChildAt(
+                childPosition
+            ).equals(view)
+        }
     }
 }
