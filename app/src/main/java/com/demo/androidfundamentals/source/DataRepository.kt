@@ -5,6 +5,7 @@ import com.demo.androidfundamentals.core.Status
 import com.demo.androidfundamentals.database.MovieDao
 import com.demo.androidfundamentals.models.MovieModel
 import com.demo.androidfundamentals.retrofit.RetrofitInstance
+import com.demo.androidfundamentals.utils.InternetUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
@@ -13,6 +14,7 @@ import org.koin.core.component.inject
 
 class DataRepository : KoinComponent {
     private val movieDao: MovieDao by inject()
+    private val internetUtils: InternetUtils by inject()
 
     private val moviesAPI = RetrofitInstance.service
 
@@ -23,18 +25,18 @@ class DataRepository : KoinComponent {
         fetchFromWeb: Boolean = false
     ): Resource<List<MovieModel>> {
         var dataInDB = fetchLocalData(sortBy, sortType, filterYears)
-        try {
-            if (dataInDB.isEmpty() || fetchFromWeb) {
-                syncDataFromWeb()
-                dataInDB = fetchLocalData(sortBy, sortType, filterYears)
-                if (dataInDB.isEmpty()) {
-                    throw Exception("unable to get data")
-                }
-                return Resource.success(dataInDB)
+        return try {
+            if((fetchFromWeb || dataInDB.isEmpty()) && !internetUtils.isOnline()) {
+                throw Exception("Internet not found")
             }
-            return Resource.success(dataInDB)
+            syncDataFromWeb()
+            dataInDB = fetchLocalData(sortBy, sortType, filterYears)
+            if (dataInDB.isEmpty()) {
+                throw Exception("unable to get data")
+            }
+            Resource.success(dataInDB)
         } catch (e: Exception) {
-            return Resource.error(e.message)
+            Resource.error(e.message)
         }
     }
 

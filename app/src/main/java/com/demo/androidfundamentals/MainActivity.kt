@@ -13,6 +13,7 @@ import com.demo.androidfundamentals.databinding.ActivityMainBinding
 import com.demo.androidfundamentals.databinding.FilterBottomSheetBinding
 import com.demo.androidfundamentals.databinding.SortBottomSheetBinding
 import com.demo.androidfundamentals.core.Status
+import com.demo.androidfundamentals.utils.InternetUtils
 import com.demo.androidfundamentals.viewmodel.MainViewModel
 import com.demo.androidfundamentals.viewmodel.SortBy
 import com.demo.androidfundamentals.viewmodel.SortType
@@ -57,6 +58,8 @@ class MainActivity : AppCompatActivity() {
                 else -> {
                     binding.progressBar.visibility = View.GONE
                     binding.retryBtn.visibility = View.VISIBLE
+                    binding.internetErrorText.text = it.errorMessage
+                    binding.internetErrorText.visibility = View.VISIBLE
                     binding.retryBtn.setOnClickListener {
                         viewModel.populateData()
                     }
@@ -103,12 +106,11 @@ class MainActivity : AppCompatActivity() {
         sortDialog = BottomSheetDialog(this)
         sortBottomSheetBinding = SortBottomSheetBinding.inflate(layoutInflater)
         sortBottomSheetBinding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
-            viewModel.selectedSortBy =
-                when (checkedId) {
-                    sortBottomSheetBinding.byRating.id -> SortBy.imDbRating
-                    sortBottomSheetBinding.byName.id -> SortBy.title
-                    else -> SortBy.year
-                }
+            viewModel.selectedSortBy = when (checkedId) {
+                sortBottomSheetBinding.byRating.id -> SortBy.imDbRating
+                sortBottomSheetBinding.byName.id -> SortBy.title
+                else -> SortBy.year
+            }
 
             viewModel.populateData()
             sortDialog.dismiss()

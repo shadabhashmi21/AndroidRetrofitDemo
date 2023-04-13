@@ -7,4 +7,5 @@
     <string name="by_release_date">By Release Date</string>
     <string name="by_name">By Name</string>
     <string name="retry">Retry</string>
+    <string name="internet_not_connected">Internet not connected</string>
 </resources>
