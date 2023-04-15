@@ -26,11 +26,13 @@ class DataRepository : KoinComponent {
     ): Resource<List<MovieModel>> {
         var dataInDB = fetchLocalData(sortBy, sortType, filterYears)
         return try {
-            if((fetchFromWeb || dataInDB.isEmpty()) && !internetUtils.isOnline()) {
+            if ((fetchFromWeb || dataInDB.isEmpty()) && !internetUtils.isOnline()) {
                 throw Exception("Internet not found")
             }
-            syncDataFromWeb()
-            dataInDB = fetchLocalData(sortBy, sortType, filterYears)
+            if (fetchFromWeb || dataInDB.isEmpty()) {
+                syncDataFromWeb()
+                dataInDB = fetchLocalData(sortBy, sortType, filterYears)
+            }
             if (dataInDB.isEmpty()) {
                 throw Exception("unable to get data")
             }
@@ -52,9 +54,8 @@ class DataRepository : KoinComponent {
         val apiData = withContext(Dispatchers.IO) {
             moviesAPI.getMovies()
         }
-        if (apiData.status == Status.SUCCESS && apiData.data != null && apiData.data!!.isNotEmpty()) {
-            // todo - remove/replace old data
-            movieDao.insertMovies(apiData.data!!)
+        if (apiData.status == Status.SUCCESS && apiData.data?.items != null && apiData.data!!.items.isNotEmpty()) {
+            movieDao.insertMovies(apiData.data!!.items)
         }
     }
 }
